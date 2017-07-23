@@ -20,7 +20,8 @@ library(readr)
 
 ```{r, message=FALSE, warning=FALSE}
 DamLevels <- read_csv("~/Desktop/Dam levels update 2012-2017.csv")
-DamLevels
+DamLevels %>% 
+  head(20)
 ```
 
 The data is not in a tidy form and so requires cleaning.
@@ -31,7 +32,8 @@ It is logical to begin with the DATE column and join it to the remaining columns
 
 ```{r}
 DamLevelsDate<-DamLevels[5:nrow(DamLevels),1]
-DamLevelsDate
+DamLevelsDate %>% 
+  head(20)
 ```
 
 As can be seen the dates are parsed in as a character column at the outset. In order to parse the strings into a date format, I make use of the lubridate package.
@@ -42,7 +44,8 @@ library(lubridate)
 colnames(DamLevelsDate)<-c("Date")    # I rename the column to remove the all caps.
 DamLevelsDate$Date<-dmy(DamLevelsDate$Date)
 
-DamLevelsDate
+DamLevelsDate %>% 
+  head(20)
 ```
 
 As can be seen, measurements are taken exactly one day apart. To check this, I perform some transformations on the data using dplyr. In particular I check to make sure that each date is exactly one day different from the date immediately above it.
@@ -54,7 +57,8 @@ DamLevelsDate %>%
   mutate(initnum=1:nrow(DamLevelsDate)) %>%   
   mutate(DamLevelsDateLag=lag(DamLevelsDate$Date)) %>%   
   mutate(Diff=DamLevelsDateLag-Date) %>%  
-  arrange(Diff)  
+  arrange(Diff)  %>% 
+  head(20)
 ```
 
 This proves not to be the case. By some error, a few of the dates appear to be in the future. I managed to correct these by inspection.
@@ -70,7 +74,8 @@ DamLevelsDate %>%
   mutate(initnum=1:nrow(DamLevelsDate)) %>%   
   mutate(DamLevelsDateLag=lag(DamLevelsDate$Date)) %>%   
   mutate(Diff=DamLevelsDateLag-Date) %>%  
-  arrange(Diff)  
+  arrange(Diff)  %>% 
+  head(20)
 ```
 
 ##Extracting Dam Names
@@ -94,7 +99,8 @@ Each column represents a dam. The columns are evenly spaced and so can be extrac
 seq<-seq(3,51,4)
 StorageWide<-DamLevels[5:nrow(DamLevels),seq]
 colnames(StorageWide)<-Dams
-StorageWide
+StorageWide %>% 
+  head(20)
 ```
 
 ##Combine the Data
@@ -103,7 +109,8 @@ To combine the data, I bind the Date column to the storage columns.
 
 ```{r}
 StorageWide<-cbind(DamLevelsDate,StorageWide)
-StorageWide
+StorageWide %>% 
+  head(20)
 ```
 
 ##Convert the Data to Long Form
@@ -114,7 +121,8 @@ StorageLong<-StorageWide %>%
   melt(measure.vars = 2:ncol(StorageWide),variable.name = "Dam",value.name = "Storage") %>% 
   mutate(Storage=as.double(str_replace(Storage," ","")))
 
-StorageLong
+StorageLong %>% 
+  head(20)
 ```
 ##Extracting Capacity
 
@@ -146,7 +154,8 @@ TotalCapacity
 ```{r}
 StorageLong<-StorageLong %>% 
   merge(Capacities)
-StorageLong
+StorageLong %>% 
+  head(20)
 ```
 
 #Calculate Percentage Capacities
@@ -155,7 +164,8 @@ StorageLong
 StorageLong<-StorageLong %>% 
   mutate(PercentDamCapacity=Storage/Capacity) %>% 
    mutate(PercentTotalCapacity=Storage/TotalCapacity)
-StorageLong
+StorageLong %>% 
+  head(20)
 ```
 
 ```{r}

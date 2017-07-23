@@ -1,9 +1,9 @@
 ---
 title: "Cleaning Western Cape Dam Levels Data"
 output:
-  html_notebook:
-  md_document: 
-    #variant: markdown_github
+  html_document: default
+  html_notebook: null
+  md_document: null
 ---
 
 

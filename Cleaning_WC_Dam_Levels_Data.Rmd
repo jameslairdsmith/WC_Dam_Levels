@@ -149,9 +149,10 @@ StorageLong
 #Calculate Percentage Capacities
 
 ```{r}
-StorageLong %>% 
+StorageLong<-StorageLong %>% 
   mutate(PercentDamCapacity=Storage/Capacity) %>% 
    mutate(PercentTotalCapacity=Storage/TotalCapacity)
+StorageLong
 ```
 
 ```{r}

@@ -1,8 +1,9 @@
 ---
 title: "Cleaning Western Cape Dam Levels Data"
 output:
-  html_document: default
+  word_document: default
   html_notebook: default
+  html_document: default
 ---
 
 
@@ -45,7 +46,7 @@ DamLevelsDate$Date<-dmy(DamLevelsDate$Date)
 DamLevelsDate
 ```
 
-As can be seen, measurements are taken exactly one day apart. To check this, I perform some transformations on the data using dplyr. In particualr I check to make sure that each date is exactly one day different from the date immediately above it.
+As can be seen, measurements are taken exactly one day apart. To check this, I perform some transformations on the data using dplyr. In particular I check to make sure that each date is exactly one day different from the date immediately above it.
 
 ```{r}
 library(dplyr)
@@ -57,7 +58,7 @@ DamLevelsDate %>%
   arrange(Diff)  
 ```
 
-This proves not to be the case. By some error, a few of the dates appear to be in the future. I mananged to correct these by inspection.
+This proves not to be the case. By some error, a few of the dates appear to be in the future. I managed to correct these by inspection.
 
 ```{r}
 DamLevelsDate[1966,1]<-ymd("2017-05-19")

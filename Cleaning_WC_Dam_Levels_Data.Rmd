@@ -1,9 +1,7 @@
 ---
 title: "Cleaning Western Cape Dam Levels Data"
-output:
-  html_document: default
-  html_notebook: null
-  md_document: null
+output: md_document
+    
 ---
 
 
@@ -15,11 +13,12 @@ The data is available from: https://web1.capetown.gov.za/web1/opendataportal/Dat
 
 ```{r}
 library(readr)
+library(magrittr)
 ```
 
 ##Reading in the Data
 
-```{r, message=FALSE, warning=FALSE}
+```{r}
 DamLevels <- read_csv("~/Desktop/Dam levels update 2012-2017.csv")
 DamLevels %>% 
   head(20)

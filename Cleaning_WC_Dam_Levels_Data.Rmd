@@ -1,9 +1,7 @@
 ---
 title: "Cleaning Western Cape Dam Levels Data"
 output:
-  word_document: default
-  html_notebook: default
-  html_document: default
+  md_document: default
 ---
 
 
@@ -110,6 +108,7 @@ StorageWide
 ##Convert the Data to Long Form
 
 ```{r}
+library(reshape2)
 StorageLong<-StorageWide %>% 
   melt(measure.vars = 2:ncol(StorageWide),variable.name = "Dam",value.name = "Storage") %>% 
   mutate(Storage=as.double(str_replace(Storage," ","")))

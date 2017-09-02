@@ -11,8 +11,6 @@ The data is available from:
 Load Dependencies
 -----------------
 
-    library(readr)
-    library(magrittr)
     library(knitr)
     library(tidyverse)
 

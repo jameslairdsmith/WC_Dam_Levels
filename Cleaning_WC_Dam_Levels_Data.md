@@ -300,31 +300,81 @@ to be in the future. I managed to correct these by inspection.
       mutate(DamLevelsDateLag=lag(DamLevelsDate$Date)) %>%   
       mutate(Diff=DamLevelsDateLag-Date) %>%  
       arrange(Diff)  %>% 
-      head(20)
+      head(10) %>% 
+      kable()
 
-    ## # A tibble: 20 x 4
-    ##          Date initnum DamLevelsDateLag    Diff
-    ##        <date>   <int>           <date>  <time>
-    ##  1 2012-01-02       2       2012-01-01 -1 days
-    ##  2 2012-01-03       3       2012-01-02 -1 days
-    ##  3 2012-01-04       4       2012-01-03 -1 days
-    ##  4 2012-01-05       5       2012-01-04 -1 days
-    ##  5 2012-01-06       6       2012-01-05 -1 days
-    ##  6 2012-01-07       7       2012-01-06 -1 days
-    ##  7 2012-01-08       8       2012-01-07 -1 days
-    ##  8 2012-01-09       9       2012-01-08 -1 days
-    ##  9 2012-01-10      10       2012-01-09 -1 days
-    ## 10 2012-01-11      11       2012-01-10 -1 days
-    ## 11 2012-01-12      12       2012-01-11 -1 days
-    ## 12 2012-01-13      13       2012-01-12 -1 days
-    ## 13 2012-01-14      14       2012-01-13 -1 days
-    ## 14 2012-01-15      15       2012-01-14 -1 days
-    ## 15 2012-01-16      16       2012-01-15 -1 days
-    ## 16 2012-01-17      17       2012-01-16 -1 days
-    ## 17 2012-01-18      18       2012-01-17 -1 days
-    ## 18 2012-01-19      19       2012-01-18 -1 days
-    ## 19 2012-01-20      20       2012-01-19 -1 days
-    ## 20 2012-01-21      21       2012-01-20 -1 days
+<table>
+<thead>
+<tr class="header">
+<th align="left">Date</th>
+<th align="right">initnum</th>
+<th align="left">DamLevelsDateLag</th>
+<th align="left">Diff</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">2012-01-02</td>
+<td align="right">2</td>
+<td align="left">2012-01-01</td>
+<td align="left">-1 days</td>
+</tr>
+<tr class="even">
+<td align="left">2012-01-03</td>
+<td align="right">3</td>
+<td align="left">2012-01-02</td>
+<td align="left">-1 days</td>
+</tr>
+<tr class="odd">
+<td align="left">2012-01-04</td>
+<td align="right">4</td>
+<td align="left">2012-01-03</td>
+<td align="left">-1 days</td>
+</tr>
+<tr class="even">
+<td align="left">2012-01-05</td>
+<td align="right">5</td>
+<td align="left">2012-01-04</td>
+<td align="left">-1 days</td>
+</tr>
+<tr class="odd">
+<td align="left">2012-01-06</td>
+<td align="right">6</td>
+<td align="left">2012-01-05</td>
+<td align="left">-1 days</td>
+</tr>
+<tr class="even">
+<td align="left">2012-01-07</td>
+<td align="right">7</td>
+<td align="left">2012-01-06</td>
+<td align="left">-1 days</td>
+</tr>
+<tr class="odd">
+<td align="left">2012-01-08</td>
+<td align="right">8</td>
+<td align="left">2012-01-07</td>
+<td align="left">-1 days</td>
+</tr>
+<tr class="even">
+<td align="left">2012-01-09</td>
+<td align="right">9</td>
+<td align="left">2012-01-08</td>
+<td align="left">-1 days</td>
+</tr>
+<tr class="odd">
+<td align="left">2012-01-10</td>
+<td align="right">10</td>
+<td align="left">2012-01-09</td>
+<td align="left">-1 days</td>
+</tr>
+<tr class="even">
+<td align="left">2012-01-11</td>
+<td align="right">11</td>
+<td align="left">2012-01-10</td>
+<td align="left">-1 days</td>
+</tr>
+</tbody>
+</table>
 
 Extracting Dam Names
 --------------------

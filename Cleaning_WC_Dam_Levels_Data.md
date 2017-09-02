@@ -1,21 +1,23 @@
-The following code is created for the purpose of extracting and cleaning data on the dam levels in the Western Cape (WC) province of South Africa. The data is provided by the WC provincial government.
+Cleaning Western Cape Dam Level Data
+------------------------------------
 
-The data is available from: <https://web1.capetown.gov.za/web1/opendataportal/DatasetDetail?DatasetName=Dam+levels>
+The following code is created for the purpose of extracting and cleaning
+data on the dam levels in the Western Cape (WC) province of South
+Africa. The data is provided by the WC provincial government.
+
+The data is available from:
+<https://web1.capetown.gov.za/web1/opendataportal/DatasetDetail?DatasetName=Dam+levels>
 
 Load Dependencies
 -----------------
 
-``` r
-library(readr)
-library(magrittr)
-```
+    library(readr)
+    library(magrittr)
 
 Reading in the Data
 -------------------
 
-``` r
-DamLevels <- read_csv("~/Desktop/Dam levels update 2012-2017.csv")
-```
+    DamLevels <- read_csv("~/Google Drive/Applications/Github/WC_Dam_Levels/Data/Raw_Data.csv")
 
     ## Warning: Missing column names filled in: 'X2' [2], 'X3' [3], 'X4' [4],
     ## 'X5' [5], 'X6' [6], 'X7' [7], 'X8' [8], 'X9' [9], 'X10' [10], 'X11' [11],
@@ -36,10 +38,8 @@ DamLevels <- read_csv("~/Desktop/Dam levels update 2012-2017.csv")
 
     ## See spec(...) for full column specifications.
 
-``` r
-DamLevels %>% 
-  head(20)
-```
+    DamLevels %>% 
+      head(20)
 
     ## # A tibble: 20 x 61
     ##    `BULK WATER STORAGE`          X2      X3      X4        X5
@@ -80,13 +80,12 @@ The data is not in a tidy form and so requires cleaning.
 Dates
 =====
 
-It is logical to begin with the DATE column and join it to the remaining columns afterwards.
+It is logical to begin with the DATE column and join it to the remaining
+columns afterwards.
 
-``` r
-DamLevelsDate<-DamLevels[5:nrow(DamLevels),1]
-DamLevelsDate %>% 
-  head(20)
-```
+    DamLevelsDate<-DamLevels[5:nrow(DamLevels),1]
+    DamLevelsDate %>% 
+      head(20)
 
     ## # A tibble: 20 x 1
     ##    `BULK WATER STORAGE`
@@ -112,11 +111,11 @@ DamLevelsDate %>%
     ## 19            19-Jan-12
     ## 20            20-Jan-12
 
-As can be seen the dates are parsed in as a character column at the outset. In order to parse the strings into a date format, I make use of the lubridate package.
+As can be seen the dates are parsed in as a character column at the
+outset. In order to parse the strings into a date format, I make use of
+the lubridate package.
 
-``` r
-library(lubridate)
-```
+    library(lubridate)
 
     ## 
     ## Attaching package: 'lubridate'
@@ -125,13 +124,11 @@ library(lubridate)
     ## 
     ##     date
 
-``` r
-colnames(DamLevelsDate)<-c("Date")    # I rename the column to remove the all caps.
-DamLevelsDate$Date<-dmy(DamLevelsDate$Date)
+    colnames(DamLevelsDate)<-c("Date")    # I rename the column to remove the all caps.
+    DamLevelsDate$Date<-dmy(DamLevelsDate$Date)
 
-DamLevelsDate %>% 
-  head(20)
-```
+    DamLevelsDate %>% 
+      head(20)
 
     ## # A tibble: 20 x 1
     ##          Date
@@ -157,11 +154,14 @@ DamLevelsDate %>%
     ## 19 2012-01-19
     ## 20 2012-01-20
 
-As can be seen, measurements are taken exactly one day apart. To check this, I perform some transformations on the data using dplyr. In particular I check to make sure that each date is exactly one day different from the date immediately above it.
+As can be seen, measurements are taken exactly one day apart. To check
+this, I perform some transformations on the data using dplyr. In
+particular I check to make sure that each date is exactly one day
+different from the date immediately above it.
 
-``` r
-library(dplyr)
-```
+    library(dplyr)
+
+    ## Warning: package 'dplyr' was built under R version 3.4.1
 
     ## 
     ## Attaching package: 'dplyr'
@@ -178,14 +178,12 @@ library(dplyr)
     ## 
     ##     intersect, setdiff, setequal, union
 
-``` r
-DamLevelsDate %>% 
-  mutate(initnum=1:nrow(DamLevelsDate)) %>%   
-  mutate(DamLevelsDateLag=lag(DamLevelsDate$Date)) %>%   
-  mutate(Diff=DamLevelsDateLag-Date) %>%  
-  arrange(Diff)  %>% 
-  head(20)
-```
+    DamLevelsDate %>% 
+      mutate(initnum=1:nrow(DamLevelsDate)) %>%   
+      mutate(DamLevelsDateLag=lag(DamLevelsDate$Date)) %>%   
+      mutate(Diff=DamLevelsDateLag-Date) %>%  
+      arrange(Diff)  %>% 
+      head(20)
 
     ## # A tibble: 20 x 4
     ##          Date initnum DamLevelsDateLag      Diff
@@ -211,22 +209,21 @@ DamLevelsDate %>%
     ## 19 2012-01-15      15       2012-01-14   -1 days
     ## 20 2012-01-16      16       2012-01-15   -1 days
 
-This proves not to be the case. By some error, a few of the dates appear to be in the future. I managed to correct these by inspection.
+This proves not to be the case. By some error, a few of the dates appear
+to be in the future. I managed to correct these by inspection.
 
-``` r
-DamLevelsDate[1966,1]<-ymd("2017-05-19")
-DamLevelsDate[1967,1]<-ymd("2017-05-20")
-DamLevelsDate[1968,1]<-ymd("2017-05-21")
-DamLevelsDate[1969,1]<-ymd("2017-05-22")
-DamLevelsDate[1955,1]<-ymd("2017-05-08")
+    DamLevelsDate[1966,1]<-ymd("2017-05-19")
+    DamLevelsDate[1967,1]<-ymd("2017-05-20")
+    DamLevelsDate[1968,1]<-ymd("2017-05-21")
+    DamLevelsDate[1969,1]<-ymd("2017-05-22")
+    DamLevelsDate[1955,1]<-ymd("2017-05-08")
 
-DamLevelsDate %>% 
-  mutate(initnum=1:nrow(DamLevelsDate)) %>%   
-  mutate(DamLevelsDateLag=lag(DamLevelsDate$Date)) %>%   
-  mutate(Diff=DamLevelsDateLag-Date) %>%  
-  arrange(Diff)  %>% 
-  head(20)
-```
+    DamLevelsDate %>% 
+      mutate(initnum=1:nrow(DamLevelsDate)) %>%   
+      mutate(DamLevelsDateLag=lag(DamLevelsDate$Date)) %>%   
+      mutate(Diff=DamLevelsDateLag-Date) %>%  
+      arrange(Diff)  %>% 
+      head(20)
 
     ## # A tibble: 20 x 4
     ##          Date initnum DamLevelsDateLag    Diff
@@ -255,16 +252,16 @@ DamLevelsDate %>%
 Extracting Dam Names
 --------------------
 
-The names of the various Dams are given above the various columns and can be extracted in sequence. They are also changed to title case by means of the stringr package.
+The names of the various Dams are given above the various columns and
+can be extracted in sequence. They are also changed to title case by
+means of the stringr package.
 
-``` r
-library(stringr)
-seq<-seq(2,50,4)
-Dams<-DamLevels[2,seq]
-Dams<-as.character(Dams)
-Dams<-str_to_title(Dams)
-Dams
-```
+    library(stringr)
+    seq<-seq(2,50,4)
+    Dams<-DamLevels[2,seq]
+    Dams<-as.character(Dams)
+    Dams<-str_to_title(Dams)
+    Dams
 
     ##  [1] "Wemmershoek"     "Steenbras Lower" "Steenbras Upper"
     ##  [4] "Vo<cb>Lvlei"     "Hely-Hutchinson" "Woodhead"       
@@ -275,15 +272,15 @@ Dams
 Extracting the Storage Data
 ---------------------------
 
-Each column represents a dam. The columns are evenly spaced and so can be extracted using a seq. The Dam names (above) are used as the new column names.
+Each column represents a dam. The columns are evenly spaced and so can
+be extracted using a seq. The Dam names (above) are used as the new
+column names.
 
-``` r
-seq<-seq(3,51,4)
-StorageWide<-DamLevels[5:nrow(DamLevels),seq]
-colnames(StorageWide)<-Dams
-StorageWide %>% 
-  head(20)
-```
+    seq<-seq(3,51,4)
+    StorageWide<-DamLevels[5:nrow(DamLevels),seq]
+    colnames(StorageWide)<-Dams
+    StorageWide %>% 
+      head(20)
 
     ## # A tibble: 20 x 13
     ##    Wemmershoek `Steenbras Lower` `Steenbras Upper` `Vo\xcbLvlei`
@@ -318,11 +315,9 @@ Combine the Data
 
 To combine the data, I bind the Date column to the storage columns.
 
-``` r
-StorageWide<-cbind(DamLevelsDate,StorageWide)
-StorageWide %>% 
-  head(20)
-```
+    StorageWide<-cbind(DamLevelsDate,StorageWide)
+    StorageWide %>% 
+      head(20)
 
     ##          Date Wemmershoek Steenbras Lower Steenbras Upper Vo<cb>Lvlei
     ## 1  2012-01-01      44 621          23 549          29 620     124 100
@@ -391,20 +386,16 @@ StorageWide %>%
 Convert the Data to Long Form
 -----------------------------
 
-``` r
-library(reshape2)
-StorageLong<-StorageWide %>% 
-  melt(measure.vars = 2:ncol(StorageWide),variable.name = "Dam",value.name = "Storage") %>% 
-  mutate(Storage=as.double(str_replace(Storage," ","")))
-```
+    library(reshape2)
+    StorageLong<-StorageWide %>% 
+      melt(measure.vars = 2:ncol(StorageWide),variable.name = "Dam",value.name = "Storage") %>% 
+      mutate(Storage=as.double(str_replace(Storage," ","")))
 
-    ## Warning in evalq(as.double(str_replace(c("44 621", "44 571", "44 471", "44
-    ## 372", : NAs introduced by coercion
+    ## Warning in evalq(as.double(str_replace(Storage, " ", "")), <environment>):
+    ## NAs introduced by coercion
 
-``` r
-StorageLong %>% 
-  head(20)
-```
+    StorageLong %>% 
+      head(20)
 
     ##          Date         Dam Storage
     ## 1  2012-01-01 Wemmershoek   44621
@@ -431,17 +422,15 @@ StorageLong %>%
 Extracting Capacity
 -------------------
 
-``` r
-seq<-seq(2,50,4)
-Capacities<-DamLevels[1:2,seq]
-Capacities<-data.frame(t(Capacities))
+    seq<-seq(2,50,4)
+    Capacities<-DamLevels[1:2,seq]
+    Capacities<-data.frame(t(Capacities))
 
-Capacities<-Capacities %>% 
-  rename(Capacity=X1,Dam=X2) %>% 
-  mutate(Capacity=as.double(str_replace(Capacity," ",""))) %>% 
-  mutate(Dam=str_to_title(Dam))
-Capacities  
-```
+    Capacities<-Capacities %>% 
+      rename(Capacity=X1,Dam=X2) %>% 
+      mutate(Capacity=as.double(str_replace(Capacity," ",""))) %>% 
+      mutate(Dam=str_to_title(Dam))
+    Capacities  
 
     ##    Capacity             Dam
     ## 1     58644     Wemmershoek
@@ -460,25 +449,21 @@ Capacities
 
 Calculate total
 
-``` r
-TotalCapacity<-Capacities %>% 
-  summarise(sum(Capacity)) %>% 
-  as.numeric()
+    TotalCapacity<-Capacities %>% 
+      summarise(sum(Capacity)) %>% 
+      as.numeric()
 
-TotalCapacity
-```
+    TotalCapacity
 
     ## [1] 902074
 
 Merge Capacities with Long Data
 ===============================
 
-``` r
-StorageLong<-StorageLong %>% 
-  merge(Capacities)
-StorageLong %>% 
-  head(20)
-```
+    StorageLong<-StorageLong %>% 
+      merge(Capacities)
+    StorageLong %>% 
+      head(20)
 
     ##          Dam       Date Storage Capacity
     ## 1  Alexandra 2012-01-01    99.9      134
@@ -505,13 +490,11 @@ StorageLong %>%
 Calculate Percentage Capacities
 ===============================
 
-``` r
-StorageLong<-StorageLong %>% 
-  mutate(PercentDamCapacity=Storage/Capacity) %>% 
-   mutate(PercentTotalCapacity=Storage/TotalCapacity)
-StorageLong %>% 
-  head(20)
-```
+    StorageLong<-StorageLong %>% 
+      mutate(PercentDamCapacity=Storage/Capacity) %>% 
+       mutate(PercentTotalCapacity=Storage/TotalCapacity)
+    StorageLong %>% 
+      head(20)
 
     ##          Dam       Date Storage Capacity PercentDamCapacity
     ## 1  Alexandra 2012-01-01    99.9      134          0.7455224
@@ -556,6 +539,4 @@ StorageLong %>%
     ## 19         0.0001007678
     ## 20         0.0001002135
 
-``` r
-write.csv(file = "/Users/jameslairdsmith/Google Drive/Applications/Github/WC_Dam_Levels/Clean_WC_Dam_Levels.csv",StorageLong)
-```
+    write.csv(file = "/Users/jameslairdsmith/Google Drive/Applications/Github/WC_Dam_Levels/Clean_WC_Dam_Levels.csv",StorageLong)

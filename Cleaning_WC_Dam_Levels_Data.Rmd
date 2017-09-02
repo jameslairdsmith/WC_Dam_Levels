@@ -1,11 +1,11 @@
 ---
-title: "Cleaning Western Cape Dam Levels Data"
-output: 
-  md_document:
-    variant: markdown_github
+title: "Cleaning of Western Cape Dam Levels Data"
+output: md_document
+ 
     
 ---
-##Cleaning Western Cape Dam Level Data 
+
+#Cleaning Western Cape Dam Level Data 
 
 The following code is created for the purpose of extracting and cleaning data on the dam levels in the Western Cape (WC) province of South Africa. The data is provided by the WC provincial government.
 
@@ -13,96 +13,120 @@ The data is available from: https://web1.capetown.gov.za/web1/opendataportal/Dat
 
 ##Load Dependencies
 
-```{r}
-library(readr)
-library(magrittr)
+```{r, message=FALSE, warning=FALSE}
+library(knitr)
+library(tidyverse)
 ```
+
+I use knitr::kable for the rendering of the markdown tables. This makes it easier to read in many formats, notably Github.
 
 ##Reading in the Data
 
-```{r}
-DamLevels <- read_csv("~/Desktop/Dam levels update 2012-2017 (2).csv")
+```{r, message=FALSE, warning=FALSE}
+DamLevels <- read_csv("~/Google Drive/Applications/Github/WC_Dam_Levels/Data/Raw_Data.csv")
+
 DamLevels %>% 
-  head(20)
+  head(10) %>% 
+  select(1:9) %>% 
+  kable()
 ```
 
 The data is not in a tidy form and so requires cleaning.
 
-#Dates
+##Dates
 
-It is logical to begin with the DATE column and join it to the remaining columns afterwards.
+A logical place to begin is with the date column as all the dam levels are aligned to it in wide format.
 
 ```{r}
-DamLevelsDate<-DamLevels[5:nrow(DamLevels),1]
+DamLevelsDate<-DamLevels[5:nrow(DamLevels),1]    # The dates begin in the 5th row
+
 DamLevelsDate %>% 
-  head(20)
+  head(10) %>% 
+  kable()
 ```
 
-As can be seen the dates are parsed in as a character column at the outset. In order to parse the strings into a date format, I make use of the lubridate package.
+The dates are parsed in as a character column at the outset. In order to parse the strings into a date format, I make use of the lubridate package.
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 library(lubridate)
 
-colnames(DamLevelsDate)<-c("Date")    # I rename the column to remove the all caps.
-DamLevelsDate$Date<-dmy(DamLevelsDate$Date)
+DamLevelsDateClean <- DamLevelsDate %>% 
+  rename(Date=`BULK WATER STORAGE`) %>%     # I rename the column to remove the full caps.
+  mutate(Date=dmy(Date))
 
-DamLevelsDate %>% 
-  head(20)
+DamLevelsDateClean %>% 
+  cbind(DamLevelsDate) %>% 
+  head(10) %>% 
+  kable()
 ```
 
-As can be seen, measurements are taken exactly one day apart. To check this, I perform some transformations on the data using dplyr. In particular I check to make sure that each date is exactly one day different from the date immediately above it.
+The measurements are taken exactly one day apart. In the process of conducting the analysis however I found that there were some anomalies in the progression of the dates.
 
-```{r}
-library(dplyr)
+To check this, I perform some transformations on the data using dplyr. In particular I check to make sure that each date is exactly one day away from the date immediately above it.
 
-DamLevelsDate %>% 
-  mutate(initnum=1:nrow(DamLevelsDate)) %>%   
-  mutate(DamLevelsDateLag=lag(DamLevelsDate$Date)) %>%   
+
+```{r, message=FALSE, warning=FALSE}
+DamLevelsDateClean %>% 
+  mutate(initnum=1:nrow(DamLevelsDateClean)) %>% # I specify a new column of the initial row numbers for reference.
+  mutate(DamLevelsDateLag=lag(DamLevelsDateClean$Date)) %>%   
   mutate(Diff=DamLevelsDateLag-Date) %>%  
   arrange(Diff)  %>% 
-  head(20)
+  head(10) %>% 
+  kable()
 ```
 
 This proves not to be the case. By some error, a few of the dates appear to be in the future. I managed to correct these by inspection.
 
 ```{r}
-DamLevelsDate[1966,1]<-ymd("2017-05-19")
-DamLevelsDate[1967,1]<-ymd("2017-05-20")
-DamLevelsDate[1968,1]<-ymd("2017-05-21")
-DamLevelsDate[1969,1]<-ymd("2017-05-22")
-DamLevelsDate[1955,1]<-ymd("2017-05-08")
+DamLevelsDateClean[1966,1]<-ymd("2017-05-19")
+DamLevelsDateClean[1967,1]<-ymd("2017-05-20")
+DamLevelsDateClean[1968,1]<-ymd("2017-05-21")
+DamLevelsDateClean[1969,1]<-ymd("2017-05-22")
+DamLevelsDateClean[1955,1]<-ymd("2017-05-08")
 
-DamLevelsDate %>% 
+DamLevelsDateClean %>% 
   mutate(initnum=1:nrow(DamLevelsDate)) %>%   
-  mutate(DamLevelsDateLag=lag(DamLevelsDate$Date)) %>%   
+  mutate(DamLevelsDateLag=lag(DamLevelsDateClean$Date)) %>%   
   mutate(Diff=DamLevelsDateLag-Date) %>%  
   arrange(Diff)  %>% 
-  head(20)
+  head(10) %>% 
+  kable()
 ```
 
 ##Extracting Dam Names
 
-The names of the various Dams are given above the various columns and can be extracted in sequence. They are also changed to title case by means of the stringr package.
+The names of the various dams are given above the various columns and can be extracted in sequence. They are also changed to title case by means of the stringr package.
 
-```{r}
+
+
+```{r, message=FALSE, warning=FALSE}
 library(stringr)
+
 seq<-seq(2,50,4)
-Dams<-DamLevels[2,seq]
+Dams<-DamLevels[2,seq]    # The dam mnames are in the second row
 Dams<-as.character(Dams)
 Dams<-str_to_title(Dams)
-Dams
+Dams[4]<-"Voelvlei"   
+
+Dams %>% 
+  kable()
 ```
+
+The name of Voelvlei dam usually contains a special character, which causes problems in various rendering envrioments. For simplicity it is replaced with the plain text version.
 
 ##Extracting the Storage Data
 
-Each column represents a dam. The columns are evenly spaced and so can be extracted using a seq. The Dam names (above) are used as the new column names.
+Each column represents a dam. The columns are evenly spaced and so can be extracted using a seq. The dam names (above) are used as the new column names.
 
 ```{r}
 seq<-seq(3,51,4)
+
 StorageWide<-DamLevels[5:nrow(DamLevels),seq]
 colnames(StorageWide)<-Dams
+
 StorageWide %>% 
-  head(20)
+  head(10) %>% 
+  kable()
 ```
 
 ##Combine the Data
@@ -110,7 +134,7 @@ StorageWide %>%
 To combine the data, I bind the Date column to the storage columns.
 
 ```{r}
-StorageWide<-cbind(DamLevelsDate,StorageWide)
+StorageWide<-cbind(DamLevelsDateClean,StorageWide)
 StorageWide %>% 
   head(20)
 ```
@@ -171,6 +195,6 @@ StorageLong %>%
 ```
 
 ```{r}
-write.csv(file = "/Users/jameslairdsmith/Google Drive/Applications/Github/WC_Dam_Levels/Clean_WC_Dam_Levels.csv",StorageLong)
+#write.csv(file = "/Users/jameslairdsmith/Google Drive/Applications/Github/WC_Dam_Levels/Clean_WC_Dam_Levels.csv",StorageLong)
 ```
 

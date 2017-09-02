@@ -190,14 +190,60 @@ package.
       mutate(Date=dmy(Date))
 
     DamLevelsDateClean %>% 
+      cbind(DamLevelsDate) %>% 
       head(10) %>% 
       kable()
 
-Date
-----
-
-2012-01-01 2012-01-02 2012-01-03 2012-01-04 2012-01-05 2012-01-06
-2012-01-07 2012-01-08 2012-01-09 2012-01-10
+<table>
+<thead>
+<tr class="header">
+<th align="left">Date</th>
+<th align="left">BULK WATER STORAGE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">2012-01-01</td>
+<td align="left">01-Jan-12</td>
+</tr>
+<tr class="even">
+<td align="left">2012-01-02</td>
+<td align="left">02-Jan-12</td>
+</tr>
+<tr class="odd">
+<td align="left">2012-01-03</td>
+<td align="left">03-Jan-12</td>
+</tr>
+<tr class="even">
+<td align="left">2012-01-04</td>
+<td align="left">04-Jan-12</td>
+</tr>
+<tr class="odd">
+<td align="left">2012-01-05</td>
+<td align="left">05-Jan-12</td>
+</tr>
+<tr class="even">
+<td align="left">2012-01-06</td>
+<td align="left">06-Jan-12</td>
+</tr>
+<tr class="odd">
+<td align="left">2012-01-07</td>
+<td align="left">07-Jan-12</td>
+</tr>
+<tr class="even">
+<td align="left">2012-01-08</td>
+<td align="left">08-Jan-12</td>
+</tr>
+<tr class="odd">
+<td align="left">2012-01-09</td>
+<td align="left">09-Jan-12</td>
+</tr>
+<tr class="even">
+<td align="left">2012-01-10</td>
+<td align="left">10-Jan-12</td>
+</tr>
+</tbody>
+</table>
 
 The measurements are taken exactly one day apart. In the process of
 conducting the analysis however I found that there were some anomalies

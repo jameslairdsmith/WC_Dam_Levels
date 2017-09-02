@@ -308,7 +308,8 @@ Showing seasonal changes
       scale_y_continuous(labels = scales::percent) +
       scale_x_date(date_breaks =  "1 year",date_labels = "%Y") +
       ylab("Percent Capacity") +
-      guides(fill=guide_legend(title = "Dam"))
+      guides(fill=guide_legend(title = "Dam")) +
+      theme(legend.position="top")
 
 ![](Analysis_of_WC_Dam_Levels_files/figure-markdown_strict/unnamed-chunk-6-1.png)
 

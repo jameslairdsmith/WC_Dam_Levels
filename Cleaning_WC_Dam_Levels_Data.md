@@ -539,4 +539,4 @@ Calculate Percentage Capacities
     ## 19         0.0001007678
     ## 20         0.0001002135
 
-    write.csv(file = "/Users/jameslairdsmith/Google Drive/Applications/Github/WC_Dam_Levels/Clean_WC_Dam_Levels.csv",StorageLong)
+    #write.csv(file = "/Users/jameslairdsmith/Google Drive/Applications/Github/WC_Dam_Levels/Clean_WC_Dam_Levels.csv",StorageLong)

@@ -21,7 +21,7 @@ Reading in the Data
 
     DamLevels <- read_csv("~/Google Drive/Applications/Github/WC_Dam_Levels/Data/Raw_Data.csv")
     DamLevels %>% 
-      head(20) %>% 
+      head(10) %>% 
       select(1:9) %>% 
       kable()
 
@@ -148,116 +148,6 @@ Reading in the Data
 <td align="left">20.2</td>
 <td align="left">23 136</td>
 <td align="left">69</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">07-Jan-12</td>
-<td align="left">48.01</td>
-<td align="left">44 074</td>
-<td align="left">75.2</td>
-<td align="left">NA</td>
-<td align="left">20.17</td>
-<td align="left">23 047</td>
-<td align="left">68.8</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">08-Jan-12</td>
-<td align="left">47.97</td>
-<td align="left">43 973</td>
-<td align="left">75</td>
-<td align="left">NA</td>
-<td align="left">20.17</td>
-<td align="left">23 047</td>
-<td align="left">68.8</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">09-Jan-12</td>
-<td align="left">47.91</td>
-<td align="left">43 826</td>
-<td align="left">74.7</td>
-<td align="left">NA</td>
-<td align="left">20.15</td>
-<td align="left">22 988</td>
-<td align="left">68.6</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">10-Jan-12</td>
-<td align="left">47.88</td>
-<td align="left">43 752</td>
-<td align="left">74.6</td>
-<td align="left">NA</td>
-<td align="left">20.12</td>
-<td align="left">22 900</td>
-<td align="left">68.3</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">11-Jan-12</td>
-<td align="left">47.84</td>
-<td align="left">43 654</td>
-<td align="left">74.4</td>
-<td align="left">NA</td>
-<td align="left">20.11</td>
-<td align="left">22 870</td>
-<td align="left">68.2</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">12-Jan-12</td>
-<td align="left">47.82</td>
-<td align="left">43 605</td>
-<td align="left">74.4</td>
-<td align="left">NA</td>
-<td align="left">20.09</td>
-<td align="left">22 812</td>
-<td align="left">68.1</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">13-Jan-12</td>
-<td align="left">47.77</td>
-<td align="left">43 483</td>
-<td align="left">74.1</td>
-<td align="left">NA</td>
-<td align="left">20.06</td>
-<td align="left">22 725</td>
-<td align="left">67.8</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">14-Jan-12</td>
-<td align="left">47.74</td>
-<td align="left">43 409</td>
-<td align="left">74</td>
-<td align="left">NA</td>
-<td align="left">20.04</td>
-<td align="left">22 667</td>
-<td align="left">67.6</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">15-Jan-12</td>
-<td align="left">47.71</td>
-<td align="left">43 336</td>
-<td align="left">73.9</td>
-<td align="left">NA</td>
-<td align="left">20</td>
-<td align="left">22 552</td>
-<td align="left">67.3</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">16-Jan-12</td>
-<td align="left">47.71</td>
-<td align="left">43 336</td>
-<td align="left">73.9</td>
-<td align="left">NA</td>
-<td align="left">19.97</td>
-<td align="left">22 465</td>
-<td align="left">67</td>
 <td align="left">NA</td>
 </tr>
 </tbody>

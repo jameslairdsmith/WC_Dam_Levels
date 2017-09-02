@@ -154,7 +154,7 @@ Reading in the Data
 The data is not in a tidy form and so requires cleaning.
 
 Dates
-=====
+-----
 
 A logical place to begin is with the date column as all the dam levels
 are aligned to it in wide format.
@@ -433,7 +433,7 @@ means of the stringr package.
 
     library(stringr)
     seq<-seq(2,50,4)
-    Dams<-DamLevels[2,seq]
+    Dams<-DamLevels[2,seq]    # The dam mnames are in the second row
     Dams<-as.character(Dams)
     Dams<-str_to_title(Dams)
     Dams

@@ -16,21 +16,6 @@ Load Dependencies
     library(knitr)
     library(tidyverse)
 
-    ## Loading tidyverse: ggplot2
-    ## Loading tidyverse: tibble
-    ## Loading tidyverse: tidyr
-    ## Loading tidyverse: purrr
-    ## Loading tidyverse: dplyr
-
-    ## Warning: package 'purrr' was built under R version 3.4.1
-
-    ## Warning: package 'dplyr' was built under R version 3.4.1
-
-    ## Conflicts with tidy packages ----------------------------------------------
-
-    ## filter(): dplyr, stats
-    ## lag():    dplyr, stats
-
 Reading in the Data
 -------------------
 

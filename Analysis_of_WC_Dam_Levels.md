@@ -296,6 +296,8 @@ together into a single factor.
 Showing seasonal changes
 ------------------------
 
+Here is a plot of the seasonal changes.
+
     StorageLong %>% 
       mutate(Dam_Other=fct_lump(fct_reorder(Dam,Capacity,.desc = T),6,ties.method = "first")) %>% 
       mutate(Year=year(Date),Month=month(Date)) %>% 

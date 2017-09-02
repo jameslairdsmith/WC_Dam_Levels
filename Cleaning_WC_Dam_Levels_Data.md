@@ -1045,7 +1045,7 @@ converted to doubles.
 </tbody>
 </table>
 
-Calculate total the total capacity:
+Calculate the total capacity:
 
     TotalCapacity<-Capacities %>% 
       summarise(sum(Capacity)) %>% 

@@ -159,7 +159,8 @@ Dates
 A logical place to begin is with the date column as all the dam levels
 are aligned to it in wide format.
 
-    DamLevelsDate<-DamLevels[5:nrow(DamLevels),1]   # The dates begin in the 5th row
+    DamLevelsDate<-DamLevels[5:nrow(DamLevels),1]    # The dates begin in the 5th row
+
     DamLevelsDate %>% 
       head(10) %>% 
       kable()
@@ -184,10 +185,11 @@ package.
 
     library(lubridate)
 
-    colnames(DamLevelsDate)<-c("Date")    # I rename the column to remove the full caps.
-    DamLevelsDate$Date<-dmy(DamLevelsDate$Date)
+    DamLevelsDateClean <- DamLevelsDate %>% 
+      rename(Date=`BULK WATER STORAGE`) %>%     # I rename the column to remove the full caps.
+      mutate(Date=dmy(Date))
 
-    DamLevelsDate %>% 
+    DamLevelsDateClean %>% 
       head(10) %>% 
       kable()
 
@@ -205,9 +207,9 @@ To check this, I perform some transformations on the data using dplyr.
 In particular I check to make sure that each date is exactly one day
 away from the date immediately above it.
 
-    DamLevelsDate %>% 
-      mutate(initnum=1:nrow(DamLevelsDate)) %>%   # I specify a new column of the initial row numbers for reference.
-      mutate(DamLevelsDateLag=lag(DamLevelsDate$Date)) %>%   
+    DamLevelsDateClean %>% 
+      mutate(initnum=1:nrow(DamLevelsDateClean)) %>% # I specify a new column of the initial row numbers for reference.
+      mutate(DamLevelsDateLag=lag(DamLevelsDateClean$Date)) %>%   
       mutate(Diff=DamLevelsDateLag-Date) %>%  
       arrange(Diff)  %>% 
       head(10) %>% 
@@ -289,15 +291,15 @@ away from the date immediately above it.
 This proves not to be the case. By some error, a few of the dates appear
 to be in the future. I managed to correct these by inspection.
 
-    DamLevelsDate[1966,1]<-ymd("2017-05-19")
-    DamLevelsDate[1967,1]<-ymd("2017-05-20")
-    DamLevelsDate[1968,1]<-ymd("2017-05-21")
-    DamLevelsDate[1969,1]<-ymd("2017-05-22")
-    DamLevelsDate[1955,1]<-ymd("2017-05-08")
+    DamLevelsDateClean[1966,1]<-ymd("2017-05-19")
+    DamLevelsDateClean[1967,1]<-ymd("2017-05-20")
+    DamLevelsDateClean[1968,1]<-ymd("2017-05-21")
+    DamLevelsDateClean[1969,1]<-ymd("2017-05-22")
+    DamLevelsDateClean[1955,1]<-ymd("2017-05-08")
 
-    DamLevelsDate %>% 
+    DamLevelsDateClean %>% 
       mutate(initnum=1:nrow(DamLevelsDate)) %>%   
-      mutate(DamLevelsDateLag=lag(DamLevelsDate$Date)) %>%   
+      mutate(DamLevelsDateLag=lag(DamLevelsDateClean$Date)) %>%   
       mutate(Diff=DamLevelsDateLag-Date) %>%  
       arrange(Diff)  %>% 
       head(10) %>% 
@@ -442,7 +444,7 @@ Combine the Data
 
 To combine the data, I bind the Date column to the storage columns.
 
-    StorageWide<-cbind(DamLevelsDate,StorageWide)
+    StorageWide<-cbind(DamLevelsDateClean,StorageWide)
     StorageWide %>% 
       head(20)
 

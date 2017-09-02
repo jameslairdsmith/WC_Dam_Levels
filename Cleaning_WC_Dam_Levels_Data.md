@@ -156,36 +156,27 @@ The data is not in a tidy form and so requires cleaning.
 Dates
 =====
 
-It is logical to begin with the DATE column and join it to the remaining
-columns afterwards.
+A logical place to begin is with the date column as all the dam levels
+are aligned to it in wide format.
 
-    DamLevelsDate<-DamLevels[5:nrow(DamLevels),1]
+    DamLevelsDate<-DamLevels[5:nrow(DamLevels),1]   # The dates begin in the 5th row
     DamLevelsDate %>% 
-      head(20)
+      head(10) %>% 
+      kable()
 
-    ## # A tibble: 20 x 1
-    ##    `BULK WATER STORAGE`
-    ##                   <chr>
-    ##  1            01-Jan-12
-    ##  2            02-Jan-12
-    ##  3            03-Jan-12
-    ##  4            04-Jan-12
-    ##  5            05-Jan-12
-    ##  6            06-Jan-12
-    ##  7            07-Jan-12
-    ##  8            08-Jan-12
-    ##  9            09-Jan-12
-    ## 10            10-Jan-12
-    ## 11            11-Jan-12
-    ## 12            12-Jan-12
-    ## 13            13-Jan-12
-    ## 14            14-Jan-12
-    ## 15            15-Jan-12
-    ## 16            16-Jan-12
-    ## 17            17-Jan-12
-    ## 18            18-Jan-12
-    ## 19            19-Jan-12
-    ## 20            20-Jan-12
+BULK WATER STORAGE
+------------------
+
+01-Jan-12  
+02-Jan-12  
+03-Jan-12  
+04-Jan-12  
+05-Jan-12  
+06-Jan-12  
+07-Jan-12  
+08-Jan-12  
+09-Jan-12  
+10-Jan-12
 
 As can be seen the dates are parsed in as a character column at the
 outset. In order to parse the strings into a date format, I make use of

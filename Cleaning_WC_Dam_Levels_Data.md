@@ -35,26 +35,6 @@ Reading in the Data
 -------------------
 
     DamLevels <- read_csv("~/Google Drive/Applications/Github/WC_Dam_Levels/Data/Raw_Data.csv")
-
-    ## Warning: Missing column names filled in: 'X2' [2], 'X3' [3], 'X4' [4],
-    ## 'X5' [5], 'X6' [6], 'X7' [7], 'X8' [8], 'X9' [9], 'X10' [10], 'X11' [11],
-    ## 'X12' [12], 'X13' [13], 'X14' [14], 'X15' [15], 'X16' [16], 'X17' [17],
-    ## 'X18' [18], 'X19' [19], 'X20' [20], 'X21' [21], 'X22' [22], 'X23' [23],
-    ## 'X24' [24], 'X25' [25], 'X26' [26], 'X27' [27], 'X28' [28], 'X29' [29],
-    ## 'X30' [30], 'X31' [31], 'X32' [32], 'X33' [33], 'X34' [34], 'X35' [35],
-    ## 'X36' [36], 'X37' [37], 'X38' [38], 'X39' [39], 'X40' [40], 'X41' [41],
-    ## 'X42' [42], 'X43' [43], 'X44' [44], 'X45' [45], 'X46' [46], 'X47' [47],
-    ## 'X48' [48], 'X49' [49], 'X50' [50], 'X51' [51], 'X52' [52], 'X53' [53],
-    ## 'X54' [54], 'X55' [55], 'X56' [56], 'X57' [57], 'X58' [58], 'X59' [59],
-    ## 'X60' [60], 'X61' [61]
-
-    ## Parsed with column specification:
-    ## cols(
-    ##   .default = col_character()
-    ## )
-
-    ## See spec(...) for full column specifications.
-
     DamLevels %>% 
       head(20) %>% 
       select(1:9) %>% 

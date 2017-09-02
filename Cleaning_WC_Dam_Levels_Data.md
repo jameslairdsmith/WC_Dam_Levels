@@ -178,86 +178,113 @@ BULK WATER STORAGE
 09-Jan-12  
 10-Jan-12
 
-As can be seen the dates are parsed in as a character column at the
-outset. In order to parse the strings into a date format, I make use of
-the lubridate package.
+The dates are parsed in as a character column at the outset. In order to
+parse the strings into a date format, I make use of the lubridate
+package.
 
     library(lubridate)
 
-    ## 
-    ## Attaching package: 'lubridate'
-
-    ## The following object is masked from 'package:base':
-    ## 
-    ##     date
-
-    colnames(DamLevelsDate)<-c("Date")    # I rename the column to remove the all caps.
+    colnames(DamLevelsDate)<-c("Date")    # I rename the column to remove the full caps.
     DamLevelsDate$Date<-dmy(DamLevelsDate$Date)
 
     DamLevelsDate %>% 
-      head(20)
+      head(10) %>% 
+      kable()
 
-    ## # A tibble: 20 x 1
-    ##          Date
-    ##        <date>
-    ##  1 2012-01-01
-    ##  2 2012-01-02
-    ##  3 2012-01-03
-    ##  4 2012-01-04
-    ##  5 2012-01-05
-    ##  6 2012-01-06
-    ##  7 2012-01-07
-    ##  8 2012-01-08
-    ##  9 2012-01-09
-    ## 10 2012-01-10
-    ## 11 2012-01-11
-    ## 12 2012-01-12
-    ## 13 2012-01-13
-    ## 14 2012-01-14
-    ## 15 2012-01-15
-    ## 16 2012-01-16
-    ## 17 2012-01-17
-    ## 18 2012-01-18
-    ## 19 2012-01-19
-    ## 20 2012-01-20
+Date
+----
 
-As can be seen, measurements are taken exactly one day apart. To check
-this, I perform some transformations on the data using dplyr. In
-particular I check to make sure that each date is exactly one day
-different from the date immediately above it.
+2012-01-01 2012-01-02 2012-01-03 2012-01-04 2012-01-05 2012-01-06
+2012-01-07 2012-01-08 2012-01-09 2012-01-10
 
-    library(dplyr)
+The measurements are taken exactly one day apart. In the process of
+conducting the analysis however I found that there were some anomalies
+in the progression of the dates.
+
+To check this, I perform some transformations on the data using dplyr.
+In particular I check to make sure that each date is exactly one day
+away from the date immediately above it.
 
     DamLevelsDate %>% 
-      mutate(initnum=1:nrow(DamLevelsDate)) %>%   
+      mutate(initnum=1:nrow(DamLevelsDate)) %>%   # I specify a new column of the initial row numbers for reference.
       mutate(DamLevelsDateLag=lag(DamLevelsDate$Date)) %>%   
       mutate(Diff=DamLevelsDateLag-Date) %>%  
       arrange(Diff)  %>% 
-      head(20)
+      head(10) %>% 
+      kable()
 
-    ## # A tibble: 20 x 4
-    ##          Date initnum DamLevelsDateLag      Diff
-    ##        <date>   <int>           <date>    <time>
-    ##  1 2020-05-21    1968       2019-05-20 -367 days
-    ##  2 2018-05-19    1966       2017-05-18 -366 days
-    ##  3 2019-05-20    1967       2018-05-19 -366 days
-    ##  4 2021-05-22    1969       2020-05-21 -366 days
-    ##  5 2017-08-08    1955       2017-05-07  -93 days
-    ##  6 2012-01-02       2       2012-01-01   -1 days
-    ##  7 2012-01-03       3       2012-01-02   -1 days
-    ##  8 2012-01-04       4       2012-01-03   -1 days
-    ##  9 2012-01-05       5       2012-01-04   -1 days
-    ## 10 2012-01-06       6       2012-01-05   -1 days
-    ## 11 2012-01-07       7       2012-01-06   -1 days
-    ## 12 2012-01-08       8       2012-01-07   -1 days
-    ## 13 2012-01-09       9       2012-01-08   -1 days
-    ## 14 2012-01-10      10       2012-01-09   -1 days
-    ## 15 2012-01-11      11       2012-01-10   -1 days
-    ## 16 2012-01-12      12       2012-01-11   -1 days
-    ## 17 2012-01-13      13       2012-01-12   -1 days
-    ## 18 2012-01-14      14       2012-01-13   -1 days
-    ## 19 2012-01-15      15       2012-01-14   -1 days
-    ## 20 2012-01-16      16       2012-01-15   -1 days
+<table>
+<thead>
+<tr class="header">
+<th align="left">Date</th>
+<th align="right">initnum</th>
+<th align="left">DamLevelsDateLag</th>
+<th align="left">Diff</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">2020-05-21</td>
+<td align="right">1968</td>
+<td align="left">2019-05-20</td>
+<td align="left">-367 days</td>
+</tr>
+<tr class="even">
+<td align="left">2018-05-19</td>
+<td align="right">1966</td>
+<td align="left">2017-05-18</td>
+<td align="left">-366 days</td>
+</tr>
+<tr class="odd">
+<td align="left">2019-05-20</td>
+<td align="right">1967</td>
+<td align="left">2018-05-19</td>
+<td align="left">-366 days</td>
+</tr>
+<tr class="even">
+<td align="left">2021-05-22</td>
+<td align="right">1969</td>
+<td align="left">2020-05-21</td>
+<td align="left">-366 days</td>
+</tr>
+<tr class="odd">
+<td align="left">2017-08-08</td>
+<td align="right">1955</td>
+<td align="left">2017-05-07</td>
+<td align="left">-93 days</td>
+</tr>
+<tr class="even">
+<td align="left">2012-01-02</td>
+<td align="right">2</td>
+<td align="left">2012-01-01</td>
+<td align="left">-1 days</td>
+</tr>
+<tr class="odd">
+<td align="left">2012-01-03</td>
+<td align="right">3</td>
+<td align="left">2012-01-02</td>
+<td align="left">-1 days</td>
+</tr>
+<tr class="even">
+<td align="left">2012-01-04</td>
+<td align="right">4</td>
+<td align="left">2012-01-03</td>
+<td align="left">-1 days</td>
+</tr>
+<tr class="odd">
+<td align="left">2012-01-05</td>
+<td align="right">5</td>
+<td align="left">2012-01-04</td>
+<td align="left">-1 days</td>
+</tr>
+<tr class="even">
+<td align="left">2012-01-06</td>
+<td align="right">6</td>
+<td align="left">2012-01-05</td>
+<td align="left">-1 days</td>
+</tr>
+</tbody>
+</table>
 
 This proves not to be the case. By some error, a few of the dates appear
 to be in the future. I managed to correct these by inspection.

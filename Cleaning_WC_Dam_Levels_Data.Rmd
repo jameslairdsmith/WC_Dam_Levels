@@ -23,7 +23,7 @@ I use knitr::kable for the rendering of the markdown tables. This makes it easie
 ##Reading in the Data
 
 ```{r, message=FALSE, warning=FALSE}
-DamLevels <- read_csv("~/Google Drive/Applications/Github/WC_Dam_Levels/Data/Raw_Data.csv")
+DamLevels <- read_csv("Data/Raw_Data.csv")
 
 DamLevels %>% 
   head(10) %>% 
@@ -75,6 +75,7 @@ DamLevelsDateClean %>%
   kable()
 ```
 
+
 This proves not to be the case. By some error, a few of the dates appear to be in the future. I managed to correct these by inspection.
 
 ```{r}
@@ -92,6 +93,7 @@ DamLevelsDateClean %>%
   head(10) %>% 
   kable()
 ```
+
 
 ##Extracting Dam Names
 
@@ -114,6 +116,7 @@ Dams %>%
 
 The name of Voelvlei dam usually contains a special character, which causes problems in various rendering envrioments. For simplicity it is replaced with the plain text version.
 
+
 ##Extracting the Storage Data
 
 Each column represents a dam. The columns are evenly spaced and so can be extracted using a seq. The dam names (above) are used as the new column names.
@@ -131,70 +134,99 @@ StorageWide %>%
 
 ##Combine the Data
 
-To combine the data, I bind the Date column to the storage columns.
+To combine the data, I bind the date column to the storage columns.
 
 ```{r}
 StorageWide<-cbind(DamLevelsDateClean,StorageWide)
+
 StorageWide %>% 
-  head(20)
+  head(10) %>% 
+  kable()
 ```
+
 
 ##Convert the Data to Long Form
 
-```{r}
+The data is still in wide form and so needs to be converted to long form. I do this using the reshape2 package.
+
+The data from the storage column is still in character format and stil contains spaces. These are removed and the data is converted to double format.
+
+```{r, message=FALSE, warning=FALSE}
 library(reshape2)
+
 StorageLong<-StorageWide %>% 
   melt(measure.vars = 2:ncol(StorageWide),variable.name = "Dam",value.name = "Storage") %>% 
   mutate(Storage=as.double(str_replace(Storage," ","")))
 
 StorageLong %>% 
-  head(20)
+  head(10) %>% 
+  kable()
 ```
+
 ##Extracting Capacity
+
+Data on the capacities of the various dams line the top two rows of the dataset. They are evenly spaced and so can also be extracted by means of a sequence.
+
+Again Voelvlei needs to be corrected. Again the characters need to be converted to doubles.
 
 ```{r}
 seq<-seq(2,50,4)
 Capacities<-DamLevels[1:2,seq]
-Capacities<-data.frame(t(Capacities))
+Capacities<-data.frame(t(Capacities),stringsAsFactors = F)
+Capacities[4,2]<-c("Voelvlei")
+
 
 Capacities<-Capacities %>% 
   rename(Capacity=X1,Dam=X2) %>% 
   mutate(Capacity=as.double(str_replace(Capacity," ",""))) %>% 
   mutate(Dam=str_to_title(Dam))
-Capacities  
+
+Capacities  %>% 
+  kable()
 ```
 
-Calculate total
+Calculate the total capacity:
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 TotalCapacity<-Capacities %>% 
   summarise(sum(Capacity)) %>% 
   as.numeric()
 
-TotalCapacity
+TotalCapacity %>% 
+  kable()
 ```
 
 
 #Merge Capacities with Long Data
 
+To get the capacity data into the same dataframe as the storage data, I make use of the merge function. This automatically detects the appropriate column on which to merge.
+
 ```{r}
 StorageLong<-StorageLong %>% 
   merge(Capacities)
+
 StorageLong %>% 
-  head(20)
+  head(10) %>% 
+  kable()
 ```
 
-#Calculate Percentage Capacities
+##Calculate Percentage Capacities
+
+It is useful for plotting purposes to pre-calculate the percentage capacities.
+
+Two are calculated. One is the percentage capcity of the dam in that particular row and the other is the  capcity of that dam as a percentage of the capacities of all the dams combined.
 
 ```{r}
 StorageLong<-StorageLong %>% 
   mutate(PercentDamCapacity=Storage/Capacity) %>% 
    mutate(PercentTotalCapacity=Storage/TotalCapacity)
+
 StorageLong %>% 
-  head(20)
+  head(10) %>% 
+  kable()
 ```
 
 ```{r}
-#write.csv(file = "/Users/jameslairdsmith/Google Drive/Applications/Github/WC_Dam_Levels/Clean_WC_Dam_Levels.csv",StorageLong)
+write.csv(file = "Data/Clean_WC_Dam_Levels.csv",StorageLong)
 ```
 

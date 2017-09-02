@@ -20,7 +20,7 @@ it easier to read in many formats, notably Github.
 Reading in the Data
 -------------------
 
-    DamLevels <- read_csv("~/Google Drive/Applications/Github/WC_Dam_Levels/Data/Raw_Data.csv")
+    DamLevels <- read_csv("Data/Raw_Data.csv")
 
     DamLevels %>% 
       head(10) %>% 
@@ -1262,4 +1262,4 @@ of the capacities of all the dams combined.
 </tbody>
 </table>
 
-    #write.csv(file = "/Users/jameslairdsmith/Google Drive/Applications/Github/WC_Dam_Levels/Clean_WC_Dam_Levels.csv",StorageLong)
+    write.csv(file = "Data/Clean_WC_Dam_Levels.csv",StorageLong)

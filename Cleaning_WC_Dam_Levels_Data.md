@@ -1065,6 +1065,10 @@ Calculate total the total capacity:
 Merge Capacities with Long Data
 ===============================
 
+To get the capacity data into the same dataframe as the storage data, I
+make use of the merge function. This automatically detects the
+appropriate column on which to merge.
+
     StorageLong<-StorageLong %>% 
       merge(Capacities)
 
@@ -1146,56 +1150,116 @@ Merge Capacities with Long Data
 </table>
 
 Calculate Percentage Capacities
-===============================
+-------------------------------
+
+It is useful for plotting purposes to pre-calculate the percentage
+capacities.
+
+Two are calculated. One is the percentage capcity of the dam in that
+particular row and the other is the capcity of that dam as a percentage
+of the capacities of all the dams combined.
 
     StorageLong<-StorageLong %>% 
       mutate(PercentDamCapacity=Storage/Capacity) %>% 
        mutate(PercentTotalCapacity=Storage/TotalCapacity)
 
     StorageLong %>% 
-      head(20)
+      head(10) %>% 
+      kable()
 
-    ##          Dam       Date Storage Capacity PercentDamCapacity
-    ## 1  Alexandra 2012-01-01    99.9      134          0.7455224
-    ## 2  Alexandra 2012-01-02    99.2      134          0.7402985
-    ## 3  Alexandra 2012-01-03    98.7      134          0.7365672
-    ## 4  Alexandra 2012-01-04    99.2      134          0.7402985
-    ## 5  Alexandra 2012-01-05    98.9      134          0.7380597
-    ## 6  Alexandra 2012-01-06    98.5      134          0.7350746
-    ## 7  Alexandra 2012-01-07    97.7      134          0.7291045
-    ## 8  Alexandra 2012-01-08    97.3      134          0.7261194
-    ## 9  Alexandra 2012-01-09    96.8      134          0.7223881
-    ## 10 Alexandra 2012-01-10    95.8      134          0.7149254
-    ## 11 Alexandra 2012-01-11    95.4      134          0.7119403
-    ## 12 Alexandra 2012-01-12    95.1      134          0.7097015
-    ## 13 Alexandra 2012-01-13    94.4      134          0.7044776
-    ## 14 Alexandra 2012-01-14    93.9      134          0.7007463
-    ## 15 Alexandra 2012-01-15    93.2      134          0.6955224
-    ## 16 Alexandra 2012-01-16    92.8      134          0.6925373
-    ## 17 Alexandra 2012-01-17    92.3      134          0.6888060
-    ## 18 Alexandra 2012-01-18    91.6      134          0.6835821
-    ## 19 Alexandra 2012-01-19    90.9      134          0.6783582
-    ## 20 Alexandra 2012-01-20    90.4      134          0.6746269
-    ##    PercentTotalCapacity
-    ## 1          0.0001107448
-    ## 2          0.0001099688
-    ## 3          0.0001094145
-    ## 4          0.0001099688
-    ## 5          0.0001096362
-    ## 6          0.0001091928
-    ## 7          0.0001083060
-    ## 8          0.0001078625
-    ## 9          0.0001073083
-    ## 10         0.0001061997
-    ## 11         0.0001057563
-    ## 12         0.0001054237
-    ## 13         0.0001046477
-    ## 14         0.0001040935
-    ## 15         0.0001033175
-    ## 16         0.0001028740
-    ## 17         0.0001023198
-    ## 18         0.0001015438
-    ## 19         0.0001007678
-    ## 20         0.0001002135
+<table>
+<thead>
+<tr class="header">
+<th align="left">Dam</th>
+<th align="left">Date</th>
+<th align="right">Storage</th>
+<th align="right">Capacity</th>
+<th align="right">PercentDamCapacity</th>
+<th align="right">PercentTotalCapacity</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Alexandra</td>
+<td align="left">2012-01-01</td>
+<td align="right">99.9</td>
+<td align="right">134</td>
+<td align="right">0.7455224</td>
+<td align="right">0.0001107</td>
+</tr>
+<tr class="even">
+<td align="left">Alexandra</td>
+<td align="left">2012-01-02</td>
+<td align="right">99.2</td>
+<td align="right">134</td>
+<td align="right">0.7402985</td>
+<td align="right">0.0001100</td>
+</tr>
+<tr class="odd">
+<td align="left">Alexandra</td>
+<td align="left">2012-01-03</td>
+<td align="right">98.7</td>
+<td align="right">134</td>
+<td align="right">0.7365672</td>
+<td align="right">0.0001094</td>
+</tr>
+<tr class="even">
+<td align="left">Alexandra</td>
+<td align="left">2012-01-04</td>
+<td align="right">99.2</td>
+<td align="right">134</td>
+<td align="right">0.7402985</td>
+<td align="right">0.0001100</td>
+</tr>
+<tr class="odd">
+<td align="left">Alexandra</td>
+<td align="left">2012-01-05</td>
+<td align="right">98.9</td>
+<td align="right">134</td>
+<td align="right">0.7380597</td>
+<td align="right">0.0001096</td>
+</tr>
+<tr class="even">
+<td align="left">Alexandra</td>
+<td align="left">2012-01-06</td>
+<td align="right">98.5</td>
+<td align="right">134</td>
+<td align="right">0.7350746</td>
+<td align="right">0.0001092</td>
+</tr>
+<tr class="odd">
+<td align="left">Alexandra</td>
+<td align="left">2012-01-07</td>
+<td align="right">97.7</td>
+<td align="right">134</td>
+<td align="right">0.7291045</td>
+<td align="right">0.0001083</td>
+</tr>
+<tr class="even">
+<td align="left">Alexandra</td>
+<td align="left">2012-01-08</td>
+<td align="right">97.3</td>
+<td align="right">134</td>
+<td align="right">0.7261194</td>
+<td align="right">0.0001079</td>
+</tr>
+<tr class="odd">
+<td align="left">Alexandra</td>
+<td align="left">2012-01-09</td>
+<td align="right">96.8</td>
+<td align="right">134</td>
+<td align="right">0.7223881</td>
+<td align="right">0.0001073</td>
+</tr>
+<tr class="even">
+<td align="left">Alexandra</td>
+<td align="left">2012-01-10</td>
+<td align="right">95.8</td>
+<td align="right">134</td>
+<td align="right">0.7149254</td>
+<td align="right">0.0001062</td>
+</tr>
+</tbody>
+</table>
 
     #write.csv(file = "/Users/jameslairdsmith/Google Drive/Applications/Github/WC_Dam_Levels/Clean_WC_Dam_Levels.csv",StorageLong)

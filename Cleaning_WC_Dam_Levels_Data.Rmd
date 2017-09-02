@@ -5,7 +5,7 @@ output:
     variant: markdown_github
     
 ---
-
+##Cleaning Western Cape Dam Level Data 
 
 The following code is created for the purpose of extracting and cleaning data on the dam levels in the Western Cape (WC) province of South Africa. The data is provided by the WC provincial government.
 
@@ -21,7 +21,7 @@ library(magrittr)
 ##Reading in the Data
 
 ```{r}
-DamLevels <- read_csv("~/Desktop/Dam levels update 2012-2017.csv")
+DamLevels <- read_csv("~/Desktop/Dam levels update 2012-2017 (2).csv")
 DamLevels %>% 
   head(20)
 ```

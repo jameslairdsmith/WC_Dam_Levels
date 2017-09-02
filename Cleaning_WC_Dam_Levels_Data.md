@@ -955,17 +955,18 @@ format.
 <td align="left">Wemmershoek</td>
 <td align="right">43752</td>
 </tr>
-<tr class="odd">
-<td align="left">##Extracting</td>
-<td align="left">Capacity</td>
-<td align="right"></td>
-</tr>
 </tbody>
 </table>
+
+Extracting Capacity
+-------------------
 
 Data on the capacities of the various dams line the top two rows of the
 dataset. They are evenly spaced and so can also be extracted by means of
 a sequence.
+
+Again Voelvlei needs to be corrected. Again the characters need to be
+converted to doubles.
 
     seq<-seq(2,50,4)
     Capacities<-DamLevels[1:2,seq]
@@ -1044,45 +1045,105 @@ a sequence.
 </tbody>
 </table>
 
-Calculate total
+Calculate total the total capacity:
 
     TotalCapacity<-Capacities %>% 
       summarise(sum(Capacity)) %>% 
       as.numeric()
 
-    TotalCapacity
+    TotalCapacity %>% 
+      kable()
 
-    ## [1] 902074
+<table>
+<tbody>
+<tr class="odd">
+<td align="right">902074</td>
+</tr>
+</tbody>
+</table>
 
 Merge Capacities with Long Data
 ===============================
 
     StorageLong<-StorageLong %>% 
       merge(Capacities)
-    StorageLong %>% 
-      head(20)
 
-    ##          Dam       Date Storage Capacity
-    ## 1  Alexandra 2012-01-01    99.9      134
-    ## 2  Alexandra 2012-01-02    99.2      134
-    ## 3  Alexandra 2012-01-03    98.7      134
-    ## 4  Alexandra 2012-01-04    99.2      134
-    ## 5  Alexandra 2012-01-05    98.9      134
-    ## 6  Alexandra 2012-01-06    98.5      134
-    ## 7  Alexandra 2012-01-07    97.7      134
-    ## 8  Alexandra 2012-01-08    97.3      134
-    ## 9  Alexandra 2012-01-09    96.8      134
-    ## 10 Alexandra 2012-01-10    95.8      134
-    ## 11 Alexandra 2012-01-11    95.4      134
-    ## 12 Alexandra 2012-01-12    95.1      134
-    ## 13 Alexandra 2012-01-13    94.4      134
-    ## 14 Alexandra 2012-01-14    93.9      134
-    ## 15 Alexandra 2012-01-15    93.2      134
-    ## 16 Alexandra 2012-01-16    92.8      134
-    ## 17 Alexandra 2012-01-17    92.3      134
-    ## 18 Alexandra 2012-01-18    91.6      134
-    ## 19 Alexandra 2012-01-19    90.9      134
-    ## 20 Alexandra 2012-01-20    90.4      134
+    StorageLong %>% 
+      head(10) %>% 
+      kable()
+
+<table>
+<thead>
+<tr class="header">
+<th align="left">Dam</th>
+<th align="left">Date</th>
+<th align="right">Storage</th>
+<th align="right">Capacity</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Alexandra</td>
+<td align="left">2012-01-01</td>
+<td align="right">99.9</td>
+<td align="right">134</td>
+</tr>
+<tr class="even">
+<td align="left">Alexandra</td>
+<td align="left">2012-01-02</td>
+<td align="right">99.2</td>
+<td align="right">134</td>
+</tr>
+<tr class="odd">
+<td align="left">Alexandra</td>
+<td align="left">2012-01-03</td>
+<td align="right">98.7</td>
+<td align="right">134</td>
+</tr>
+<tr class="even">
+<td align="left">Alexandra</td>
+<td align="left">2012-01-04</td>
+<td align="right">99.2</td>
+<td align="right">134</td>
+</tr>
+<tr class="odd">
+<td align="left">Alexandra</td>
+<td align="left">2012-01-05</td>
+<td align="right">98.9</td>
+<td align="right">134</td>
+</tr>
+<tr class="even">
+<td align="left">Alexandra</td>
+<td align="left">2012-01-06</td>
+<td align="right">98.5</td>
+<td align="right">134</td>
+</tr>
+<tr class="odd">
+<td align="left">Alexandra</td>
+<td align="left">2012-01-07</td>
+<td align="right">97.7</td>
+<td align="right">134</td>
+</tr>
+<tr class="even">
+<td align="left">Alexandra</td>
+<td align="left">2012-01-08</td>
+<td align="right">97.3</td>
+<td align="right">134</td>
+</tr>
+<tr class="odd">
+<td align="left">Alexandra</td>
+<td align="left">2012-01-09</td>
+<td align="right">96.8</td>
+<td align="right">134</td>
+</tr>
+<tr class="even">
+<td align="left">Alexandra</td>
+<td align="left">2012-01-10</td>
+<td align="right">95.8</td>
+<td align="right">134</td>
+</tr>
+</tbody>
+</table>
 
 Calculate Percentage Capacities
 ===============================
@@ -1090,6 +1151,7 @@ Calculate Percentage Capacities
     StorageLong<-StorageLong %>% 
       mutate(PercentDamCapacity=Storage/Capacity) %>% 
        mutate(PercentTotalCapacity=Storage/TotalCapacity)
+
     StorageLong %>% 
       head(20)
 

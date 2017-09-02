@@ -11,10 +11,8 @@ Load Dependencies
 ``` r
 library(tidyverse)
 library(lubridate)
-#library(ggthemes)
 library(knitr)
 library(forcats)
-#library(ggiraph)
 ```
 
 Data Import
@@ -43,7 +41,7 @@ StorageLong %>%
 |   10| Alexandra | 2012-01-10 |     95.8|       134|           0.7149254|             0.0001062|
 
 What are the largest dams and their capacities?
-===============================================
+-----------------------------------------------
 
 ``` r
 StorageLong %>% 
@@ -152,8 +150,8 @@ StorageLong %>%
   ggplot(aes(x=Month,y=ChangeInStorage)) +
   geom_boxplot(aes(group=Month)) +
   scale_x_continuous(breaks = 1:12) +
-  scale_y_continuous(limits = c(-0.015,0.025)) +
-  ylab("Daily change in capacity (%)")
+  scale_y_continuous(limits = c(-0.015,0.025),labels = scales::percent) +
+  ylab("Daily change in capacity (Big Six)")
 ```
 
 ![](Analysis_of_WC_Dam_Levels_files/figure-markdown_github/unnamed-chunk-7-1.png)
@@ -181,9 +179,6 @@ StorageLong %>%
 StorageLong %>% 
   arrange(desc(Capacity)) %>% 
   ungroup() %>% 
-  #mutate(Dam=str_replace_all(Dam,"[^[:alnum:]]", " ")) %>% 
-  #mutate(Dam=str_replace_all(Dam,"Vo Lvlei", "Voelvlei")) %>% 
-  #mutate(Dam=str_to_title(Dam)) %>% 
   mutate(Dam=fct_lump(fct_rev(fct_reorder(Dam,Capacity)),n=6,ties.method = "first")) %>% 
   filter(Dam!="Other") %>% 
   group_by(Date) %>% 
@@ -196,10 +191,6 @@ StorageLong %>%
 ```
 
 ![](Analysis_of_WC_Dam_Levels_files/figure-markdown_github/unnamed-chunk-9-1.png)
-
-``` r
-#ggsave()
-```
 
 ``` r
 StorageLong %>% 

@@ -1,5 +1,5 @@
 Cleaning Western Cape Dam Level Data
-------------------------------------
+====================================
 
 The following code is created for the purpose of extracting and cleaning
 data on the dam levels in the Western Cape (WC) province of South

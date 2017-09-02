@@ -441,7 +441,7 @@ means of the stringr package.
     Dams<-DamLevels[2,seq]    # The dam mnames are in the second row
     Dams<-as.character(Dams)
     Dams<-str_to_title(Dams)
-    Dams[4]<-"Voelvlei"
+    Dams[4]<-"Voelvlei"   
 
     Dams %>% 
       kable()
@@ -489,6 +489,10 @@ means of the stringr package.
 </tr>
 </tbody>
 </table>
+
+The name of Voelvlei dam usually contains a special character, which
+causes problems in various rendering envrioments. For simplicity it is
+replaced with the plain text version.
 
 Extracting the Storage Data
 ---------------------------

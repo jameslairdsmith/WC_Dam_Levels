@@ -314,6 +314,124 @@ Here is a plot of the seasonal changes.
 
 ![](Analysis_of_WC_Dam_Levels_files/figure-markdown_strict/unnamed-chunk-6-1.png)
 
+    SeasonalMonthData<-StorageLong %>% 
+      mutate(Dam_Other=fct_lump(fct_reorder(Dam,Capacity,.desc = T),6,ties.method = "first")) %>% 
+      mutate(Year=year(Date),Month=month(Date)) %>% 
+      group_by(Dam,Year,Month,Dam_Other,Capacity) %>% 
+      summarise(PercentTotalCapacity=median(PercentTotalCapacity,na.rm=T),Date=median(Date,na.rm=T))
+
+    write.csv(SeasonalMonthData,file="Data/SeasonalMonthData.csv")
+
+    SeasonalMonthData %>% 
+      head(10) %>% 
+      kable()
+
+<table>
+<thead>
+<tr class="header">
+<th align="left">Dam</th>
+<th align="right">Year</th>
+<th align="right">Month</th>
+<th align="left">Dam_Other</th>
+<th align="right">Capacity</th>
+<th align="right">PercentTotalCapacity</th>
+<th align="left">Date</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Alexandra</td>
+<td align="right">2012</td>
+<td align="right">1</td>
+<td align="left">Other</td>
+<td align="right">134</td>
+<td align="right">0.0001029</td>
+<td align="left">2012-01-16</td>
+</tr>
+<tr class="even">
+<td align="left">Alexandra</td>
+<td align="right">2012</td>
+<td align="right">2</td>
+<td align="left">Other</td>
+<td align="right">134</td>
+<td align="right">0.0000627</td>
+<td align="left">2012-02-15</td>
+</tr>
+<tr class="odd">
+<td align="left">Alexandra</td>
+<td align="right">2012</td>
+<td align="right">3</td>
+<td align="left">Other</td>
+<td align="right">134</td>
+<td align="right">0.0000478</td>
+<td align="left">2012-03-16</td>
+</tr>
+<tr class="even">
+<td align="left">Alexandra</td>
+<td align="right">2012</td>
+<td align="right">4</td>
+<td align="left">Other</td>
+<td align="right">134</td>
+<td align="right">0.0000560</td>
+<td align="left">2012-04-15</td>
+</tr>
+<tr class="odd">
+<td align="left">Alexandra</td>
+<td align="right">2012</td>
+<td align="right">5</td>
+<td align="left">Other</td>
+<td align="right">134</td>
+<td align="right">0.0000759</td>
+<td align="left">2012-05-16</td>
+</tr>
+<tr class="even">
+<td align="left">Alexandra</td>
+<td align="right">2012</td>
+<td align="right">6</td>
+<td align="left">Other</td>
+<td align="right">134</td>
+<td align="right">0.0000991</td>
+<td align="left">2012-06-15</td>
+</tr>
+<tr class="odd">
+<td align="left">Alexandra</td>
+<td align="right">2012</td>
+<td align="right">7</td>
+<td align="left">Other</td>
+<td align="right">134</td>
+<td align="right">0.0001197</td>
+<td align="left">2012-07-16</td>
+</tr>
+<tr class="even">
+<td align="left">Alexandra</td>
+<td align="right">2012</td>
+<td align="right">8</td>
+<td align="left">Other</td>
+<td align="right">134</td>
+<td align="right">0.0001184</td>
+<td align="left">2012-08-16</td>
+</tr>
+<tr class="odd">
+<td align="left">Alexandra</td>
+<td align="right">2012</td>
+<td align="right">9</td>
+<td align="left">Other</td>
+<td align="right">134</td>
+<td align="right">0.0001463</td>
+<td align="left">2012-09-15</td>
+</tr>
+<tr class="even">
+<td align="left">Alexandra</td>
+<td align="right">2012</td>
+<td align="right">10</td>
+<td align="left">Other</td>
+<td align="right">134</td>
+<td align="right">0.0001448</td>
+<td align="left">2012-10-16</td>
+</tr>
+</tbody>
+</table>
+
     StorageLong %>% 
       arrange(desc(Capacity)) %>% 
       ungroup() %>% 
@@ -330,7 +448,7 @@ Here is a plot of the seasonal changes.
       scale_y_continuous(limits = c(-0.015,0.025),labels = scales::percent) +
       ylab("Daily change in capacity (Big Six)")
 
-![](Analysis_of_WC_Dam_Levels_files/figure-markdown_strict/unnamed-chunk-7-1.png)
+![](Analysis_of_WC_Dam_Levels_files/figure-markdown_strict/unnamed-chunk-8-1.png)
 
     StorageLong %>% 
       arrange(desc(Capacity)) %>% 
@@ -347,7 +465,7 @@ Here is a plot of the seasonal changes.
       scale_x_continuous(breaks = 1:54) +
       scale_y_continuous(limits = c(-0.015,0.025))
 
-![](Analysis_of_WC_Dam_Levels_files/figure-markdown_strict/unnamed-chunk-8-1.png)
+![](Analysis_of_WC_Dam_Levels_files/figure-markdown_strict/unnamed-chunk-9-1.png)
 
     StorageLong %>% 
       arrange(desc(Capacity)) %>% 
@@ -362,7 +480,7 @@ Here is a plot of the seasonal changes.
       ggplot(aes(x=Date,y=ChangeInStorage))+
       geom_line(na.rm = T)
 
-![](Analysis_of_WC_Dam_Levels_files/figure-markdown_strict/unnamed-chunk-9-1.png)
+![](Analysis_of_WC_Dam_Levels_files/figure-markdown_strict/unnamed-chunk-10-1.png)
 
     StorageLong %>% 
       arrange(desc(Capacity)) %>% 
@@ -384,4 +502,4 @@ Here is a plot of the seasonal changes.
       scale_y_continuous(labels = function(x){x/1000}) +
       ylab("Capacity difference from median at time of year ('000)") 
 
-![](Analysis_of_WC_Dam_Levels_files/figure-markdown_strict/unnamed-chunk-10-1.png)
+![](Analysis_of_WC_Dam_Levels_files/figure-markdown_strict/unnamed-chunk-11-1.png)

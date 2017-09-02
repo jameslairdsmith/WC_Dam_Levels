@@ -1,88 +1,123 @@
 ---
 title: "Analysis of Western Cape Dam Levels"
-output: html_notebook
+output: md_document
 ---
+
+#Analysis of Western Cape Dam Levels
 
 Below are some calculations and visualisations of the water levels of the Dams in the Western Cape  (WC) province of South Africa.
 
 The data is gathered from the City of Cape Town data portal and cleaned in a separate script. I have uploaded the cleaned version of the data to github where it can be extracted.
 
-```{r}
-library(ggplot2)
-library(forcats)
-library(dplyr)
-library(stringr)
+
+##Load Dependencies
+
+```{r, message=FALSE, warning=FALSE}
+library(tidyverse)
 library(lubridate)
-library(ggthemes)
-library(ggiraph)
+library(knitr)
+library(forcats)
 ```
 
+
+##Data Import
 
 ```{r}
-StorageLong<-read.csv("Clean_WC_Dam_Levels.csv")
-StorageLong$Date<-ymd(StorageLong$Date)
-levels(StorageLong$Dam)[11]<-"Voelvlei"
-StorageLong
-```
-```{r}
-#levels(StorageLong$Dam)[11]<-"Voelvlei"
-```
+StorageLong<-read.csv("Data/Clean_WC_Dam_Levels.csv",stringsAsFactors = F) %>% 
+  mutate(Date=ymd(Date)) 
 
-
-```{r}
-plot<-StorageLong %>% 
-  group_by(Dam) %>% 
-  summarise(Capacity=median(Capacity,na.rm=T)) %>% 
-  arrange(desc(Capacity)) %>% 
-  mutate(Dam=str_replace_all(Dam,"[^[:alnum:]]", " ")) %>% 
-  mutate(Dam=str_replace_all(Dam,"Vo Lvlei", "Voelvlei")) %>% 
-  mutate(Dam=str_to_title(Dam)) %>% 
-  ggplot(aes(x=fct_lump(fct_rev(fct_reorder(Dam,Capacity)),6,ties.method = "first"),y=Capacity)) +
-  geom_bar(stat = "identity") +
-  xlab("Dam") +
-  ylab("Capacity ('000)") +
-  theme(axis.text.x = element_text(angle =45,vjust = 1,hjust = 1)) +
-  scale_y_continuous(labels = function(x){x/1000}) +
-  theme_tufte(ticks = F)+
-  theme(axis.ticks.x = )
-#plot
-
-#ggsave(file="BigSixCapacity.html", plot=plot, width=10, height=8) 
-
-
-plot$data %>% 
-  mutate(Dam=fct_lump(fct_rev(fct_reorder(Dam,Capacity)),6,ties.method = "first")) %>% 
-  group_by(Dam) %>% 
-  summarise(Capacity=sum(Capacity))
-
+StorageLong %>% 
+  head(10) %>% 
+  kable()
 ```
 
+
+##What are the largest dams and their capacities?
 
 ```{r}
 StorageLong %>% 
+  select(Dam,Capacity) %>% 
+  distinct() %>% 
+  arrange(desc(Capacity)) %>% 
+  ggplot() +
+  geom_col(aes(x=fct_rev(fct_reorder(Dam,Capacity)),y=Capacity)) +
+  theme(axis.text.x = element_text(angle=45,vjust = 1,hjust = 1)) +
+  xlab("Dams") +
+  ylab("Capacity ('000)") +
+  scale_y_continuous(labels = function(x){x/1000})
+```
+
+You can see from the chart that the majority of the capacity is housed in 6 dams. These are generally referred to as the 'Big Six'
+
+```{r}
+BigSixCapacities<-StorageLong %>% 
+  select(Dam,Capacity) %>% 
+  distinct() %>% 
+  arrange(desc(Capacity)) %>% 
+  mutate(Dam=fct_lump(fct_rev(fct_reorder(Dam,Capacity)),6,ties.method = "first")) %>% 
+  group_by(Dam) %>% 
+  summarise(Capacity=sum(Capacity,na.rm=T))
+
+write.csv(BigSixCapacities,file = "Data/BigSixCapacities.csv")
+
+BigSixCapacities %>% 
+  kable()
+```
+
+##Releveling Factors
+
+Some of the analysis is made simpler by lumping the smaller dam levels together into a single factor.
+
+```{r}
+StorageLong %>% 
+  select(Dam,Capacity) %>% 
+  distinct() %>% 
+  arrange(desc(Capacity)) %>% 
+  mutate(Dam_Other=fct_lump(fct_reorder(Dam,Capacity,.desc = T),6,ties.method = "first")) %>% 
+  kable()
+```
+
+
+##Showing seasonal changes
+
+Here is a plot of the seasonal changes.
+
+```{r, fig.width=9, message=FALSE, warning=FALSE}
+StorageLong %>% 
+  mutate(Dam_Other=fct_lump(fct_reorder(Dam,Capacity,.desc = T),6,ties.method = "first")) %>% 
   mutate(Year=year(Date),Month=month(Date)) %>% 
-  group_by(Dam,Year,Month) %>% 
-  summarise(PercentTotalCapacity=median(PercentTotalCapacity,na.rm=T),Date=median(Date,na.rm=T)) %>%
+  group_by(Dam,Year,Month,Dam_Other) %>% 
+  summarise(PercentTotalCapacity=median(PercentTotalCapacity,na.rm=T),Date=median(Date,na.rm=T)) %>% 
   ungroup() %>% 
-  mutate(Dam=str_replace_all(Dam,"[^[:alnum:]]", " ")) %>% 
-  mutate(Dam=str_replace_all(Dam,"Vo Lvlei", "Voelvlei")) %>% 
-  mutate(Dam=str_to_title(Dam)) %>% 
-  mutate(Dam=fct_lump(fct_rev(fct_reorder(Dam,PercentTotalCapacity)),n=6,ties.method = "first")) %>%
-  ggplot(aes(y=PercentTotalCapacity,x=Date,fill=Dam)) +
-  geom_area(position = "stack") +
+  ggplot() +
+  geom_area(aes(x=Date,y=PercentTotalCapacity,fill=Dam_Other),position = "stack") +
+  scale_fill_grey() +
   scale_y_continuous(labels = scales::percent) +
   scale_x_date(date_breaks =  "1 year",date_labels = "%Y") +
   ylab("Percent Capacity") +
-  scale_fill_grey()
+  guides(fill=guide_legend(title = "Dam")) 
 ```
 
 ```{r}
+SeasonalMonthData<-StorageLong %>% 
+  mutate(Dam_Other=fct_lump(fct_reorder(Dam,Capacity,.desc = T),6,ties.method = "first")) %>% 
+  mutate(Year=year(Date),Month=month(Date)) %>% 
+  group_by(Dam,Year,Month,Dam_Other,Capacity) %>% 
+  summarise(PercentTotalCapacity=median(PercentTotalCapacity,na.rm=T),Date=median(Date,na.rm=T))
+
+write.csv(SeasonalMonthData,file="Data/SeasonalMonthData.csv")
+
+SeasonalMonthData %>% 
+  head(10) %>% 
+  kable()
+```
+
+
+
+```{r, message=FALSE, warning=FALSE}
 StorageLong %>% 
   arrange(desc(Capacity)) %>% 
   ungroup() %>% 
-  mutate(Dam=str_replace_all(Dam,"[^[:alnum:]]", " ")) %>% 
-  mutate(Dam=str_replace_all(Dam,"Vo Lvlei", "Voelvlei")) %>% 
-  mutate(Dam=str_to_title(Dam)) %>% 
   mutate(Dam=fct_lump(fct_rev(fct_reorder(Dam,Capacity)),n=6,ties.method = "first")) %>% 
   filter(Dam!="Other") %>% 
   group_by(Date) %>% 
@@ -93,16 +128,14 @@ StorageLong %>%
   ggplot(aes(x=Month,y=ChangeInStorage)) +
   geom_boxplot(aes(group=Month)) +
   scale_x_continuous(breaks = 1:12) +
-  scale_y_continuous(limits = c(-0.015,0.025))
+  scale_y_continuous(limits = c(-0.015,0.025),labels = scales::percent) +
+  ylab("Daily change in capacity (Big Six)")
 ```
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 StorageLong %>% 
   arrange(desc(Capacity)) %>% 
   ungroup() %>% 
-  mutate(Dam=str_replace_all(Dam,"[^[:alnum:]]", " ")) %>% 
-  mutate(Dam=str_replace_all(Dam,"Vo Lvlei", "Voelvlei")) %>% 
-  mutate(Dam=str_to_title(Dam)) %>% 
   mutate(Dam=fct_lump(fct_rev(fct_reorder(Dam,Capacity)),n=6,ties.method = "first")) %>% 
   filter(Dam!="Other") %>% 
   group_by(Date) %>% 
@@ -120,9 +153,6 @@ StorageLong %>%
 StorageLong %>% 
   arrange(desc(Capacity)) %>% 
   ungroup() %>% 
-  mutate(Dam=str_replace_all(Dam,"[^[:alnum:]]", " ")) %>% 
-  mutate(Dam=str_replace_all(Dam,"Vo Lvlei", "Voelvlei")) %>% 
-  mutate(Dam=str_to_title(Dam)) %>% 
   mutate(Dam=fct_lump(fct_rev(fct_reorder(Dam,Capacity)),n=6,ties.method = "first")) %>% 
   filter(Dam!="Other") %>% 
   group_by(Date) %>% 
@@ -133,17 +163,12 @@ StorageLong %>%
   ggplot(aes(x=Date,y=ChangeInStorage))+
   geom_line(na.rm = T)
 
-ggsave()
-
 ```
 
 ```{r}
-plot<-StorageLong %>% 
+StorageLong %>% 
   arrange(desc(Capacity)) %>% 
   ungroup() %>% 
-  mutate(Dam=str_replace_all(Dam,"[^[:alnum:]]", " ")) %>% 
-  mutate(Dam=str_replace_all(Dam,"Vo Lvlei", "Voelvlei")) %>% 
-  mutate(Dam=str_to_title(Dam)) %>% 
   mutate(Dam=fct_lump(fct_rev(fct_reorder(Dam,Capacity)),n=6,ties.method = "first")) %>% 
   filter(Dam!="Other") %>% 
   group_by(Date) %>% 
@@ -161,65 +186,6 @@ plot<-StorageLong %>%
   scale_y_continuous(labels = function(x){x/1000}) +
   ylab("Capacity difference from median at time of year ('000)") 
 
-#build<-ggplot_build(plot)
-#as.date(build$layout$panel_ranges[[1]]$x.major_source)
-
-plot +
-  theme_tufte() +
-  geom_rangeframe()+
-  scale_y_continuous(breaks = extended_range_breaks()(plot$data$StorageDiff),labels = function(x){round(x/1000,0)})
-  #scale_x_date(breaks=)
-  #scale_x_date(breaks = range(plot$data$Date,na.rm = T))
-  #geom_hline(yintercept = 0)
-
-Dates<-plot$data %>% 
-  ungroup() %>% 
-  select(Date) %>% 
-  as.list()
-pretty_dates(Dates,5)
-```
-
-```{r}
-x<-plot$data %>%
-  ungroup() %>% 
-  select(Date) %>% 
-  as.vector() %>% 
-  #as.POSIXct() %>% 
-  #as.numeric() %>%
-  #typeof() %>% 
-  show()
-
-x
-#extended_range_breaks()(x)
-```
-
-```{r}
-df<-StorageLong %>% 
-  arrange(desc(Capacity)) %>% 
-  ungroup() %>% 
-  mutate(Dam=str_replace_all(Dam,"[^[:alnum:]]", " ")) %>% 
-  mutate(Dam=str_replace_all(Dam,"Vo Lvlei", "Voelvlei")) %>% 
-  mutate(Dam=str_to_title(Dam)) %>% 
-  mutate(Dam=fct_lump(fct_rev(fct_reorder(Dam,Capacity)),n=6,ties.method = "first")) %>% 
-  filter(Dam!="Other") %>% 
-  group_by(Date) %>% 
-  summarise(Storage=sum(Storage,na.rm=T)) %>% 
-  mutate(DateDayMonth=make_date(1990, month(Date), day(Date))) %>% 
-  group_by(DateDayMonth) %>% 
-  mutate(AvrStorage=median(Storage,na.rm=T)) %>% 
-  mutate(StorageDiff=(Storage-AvrStorage)) %>% 
-  filter(!is.na(DateDayMonth)) %>% 
-  filter(Storage!=0) 
-
-extended_range_breaks()(df$StorageDiff)
-```
-
-```{r}
-extended_range_breaks()(df$StorageDiff)
-```
-
-```{r}
-extended_range_breaks(x=df %>% ungroup() %>%select(StorageDiff) )
 ```
 
 

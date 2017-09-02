@@ -14,10 +14,14 @@ Load Dependencies
     library(knitr)
     library(tidyverse)
 
+I use knitr::kable for the rendering of the markdown tables. This makes
+it easier to read in many formats, notably Github.
+
 Reading in the Data
 -------------------
 
     DamLevels <- read_csv("~/Google Drive/Applications/Github/WC_Dam_Levels/Data/Raw_Data.csv")
+
     DamLevels %>% 
       head(10) %>% 
       select(1:9) %>% 
@@ -427,63 +431,252 @@ to be in the future. I managed to correct these by inspection.
 Extracting Dam Names
 --------------------
 
-The names of the various Dams are given above the various columns and
+The names of the various dams are given above the various columns and
 can be extracted in sequence. They are also changed to title case by
 means of the stringr package.
 
     library(stringr)
+
     seq<-seq(2,50,4)
     Dams<-DamLevels[2,seq]    # The dam mnames are in the second row
     Dams<-as.character(Dams)
     Dams<-str_to_title(Dams)
-    Dams
+    Dams[4]<-"Voelvlei"
 
-    ##  [1] "Wemmershoek"     "Steenbras Lower" "Steenbras Upper"
-    ##  [4] "Vo<cb>Lvlei"     "Hely-Hutchinson" "Woodhead"       
-    ##  [7] "Victoria"        "Alexandra"       "De Villiers"    
-    ## [10] "Kleinplaats"     "Lewis Gay"       "Theewaterskloof"
-    ## [13] "Berg River"
+    Dams %>% 
+      kable()
+
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">Wemmershoek</td>
+</tr>
+<tr class="even">
+<td align="left">Steenbras Lower</td>
+</tr>
+<tr class="odd">
+<td align="left">Steenbras Upper</td>
+</tr>
+<tr class="even">
+<td align="left">Voelvlei</td>
+</tr>
+<tr class="odd">
+<td align="left">Hely-Hutchinson</td>
+</tr>
+<tr class="even">
+<td align="left">Woodhead</td>
+</tr>
+<tr class="odd">
+<td align="left">Victoria</td>
+</tr>
+<tr class="even">
+<td align="left">Alexandra</td>
+</tr>
+<tr class="odd">
+<td align="left">De Villiers</td>
+</tr>
+<tr class="even">
+<td align="left">Kleinplaats</td>
+</tr>
+<tr class="odd">
+<td align="left">Lewis Gay</td>
+</tr>
+<tr class="even">
+<td align="left">Theewaterskloof</td>
+</tr>
+<tr class="odd">
+<td align="left">Berg River</td>
+</tr>
+</tbody>
+</table>
 
 Extracting the Storage Data
 ---------------------------
 
 Each column represents a dam. The columns are evenly spaced and so can
-be extracted using a seq. The Dam names (above) are used as the new
+be extracted using a seq. The dam names (above) are used as the new
 column names.
 
     seq<-seq(3,51,4)
+
     StorageWide<-DamLevels[5:nrow(DamLevels),seq]
     colnames(StorageWide)<-Dams
-    StorageWide %>% 
-      head(20)
 
-    ## # A tibble: 20 x 13
-    ##    Wemmershoek `Steenbras Lower` `Steenbras Upper` `Vo\xcbLvlei`
-    ##          <chr>             <chr>             <chr>         <chr>
-    ##  1      44 621            23 549            29 620       124 100
-    ##  2      44 571            23 460            29 620       123 812
-    ##  3      44 471            23 372            29 570       123 237
-    ##  4      44 372            23 313            29 620       122 520
-    ##  5      44 322            23 224            29 317       121 947
-    ##  6      44 221            23 136            29 545       121 374
-    ##  7      44 074            23 047            29 495       121 232
-    ##  8      43 973            23 047            29 242       121 232
-    ##  9      43 826            22 988            29 646       120 233
-    ## 10      43 752            22 900            29 595       119 805
-    ## 11      43 654            22 870            29 595       117 960
-    ## 12      43 605            22 812            30 003       119 094
-    ## 13      43 483            22 725            29 773       118 527
-    ## 14      43 409            22 667            30 182       117 818
-    ## 15      43 336            22 552            30 156       117 818
-    ## 16      43 336            22 465            30 156       117 111
-    ## 17      43 140            22 407            29 545       115 700
-    ## 18      43 042            22 320            29 292       114 997
-    ## 19      42 969            22 175            29 141       114 576
-    ## 20      42 872            22 089            29 066       114 016
-    ## # ... with 9 more variables: `Hely-Hutchinson` <chr>, Woodhead <chr>,
-    ## #   Victoria <chr>, Alexandra <chr>, `De Villiers` <chr>,
-    ## #   Kleinplaats <chr>, `Lewis Gay` <chr>, Theewaterskloof <chr>, `Berg
-    ## #   River` <chr>
+    StorageWide %>% 
+      head(10) %>% 
+      kable()
+
+<table>
+<thead>
+<tr class="header">
+<th align="left">Wemmershoek</th>
+<th align="left">Steenbras Lower</th>
+<th align="left">Steenbras Upper</th>
+<th align="left">Voelvlei</th>
+<th align="left">Hely-Hutchinson</th>
+<th align="left">Woodhead</th>
+<th align="left">Victoria</th>
+<th align="left">Alexandra</th>
+<th align="left">De Villiers</th>
+<th align="left">Kleinplaats</th>
+<th align="left">Lewis Gay</th>
+<th align="left">Theewaterskloof</th>
+<th align="left">Berg River</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">44 621</td>
+<td align="left">23 549</td>
+<td align="left">29 620</td>
+<td align="left">124 100</td>
+<td align="left">763</td>
+<td align="left">742.8</td>
+<td align="left">0</td>
+<td align="left">99.9</td>
+<td align="left">196.5</td>
+<td align="left">336.6</td>
+<td align="left">128.3</td>
+<td align="left">357 963</td>
+<td align="left">115 930</td>
+</tr>
+<tr class="even">
+<td align="left">44 571</td>
+<td align="left">23 460</td>
+<td align="left">29 620</td>
+<td align="left">123 812</td>
+<td align="left">763</td>
+<td align="left">742.8</td>
+<td align="left">0</td>
+<td align="left">99.2</td>
+<td align="left">196.5</td>
+<td align="left">336.6</td>
+<td align="left">128.3</td>
+<td align="left">356 677</td>
+<td align="left">114 850</td>
+</tr>
+<tr class="odd">
+<td align="left">44 471</td>
+<td align="left">23 372</td>
+<td align="left">29 570</td>
+<td align="left">123 237</td>
+<td align="left">773</td>
+<td align="left">745.4</td>
+<td align="left">0</td>
+<td align="left">98.7</td>
+<td align="left">197.3</td>
+<td align="left">336.6</td>
+<td align="left">128.3</td>
+<td align="left">355 394</td>
+<td align="left">114 280</td>
+</tr>
+<tr class="even">
+<td align="left">44 372</td>
+<td align="left">23 313</td>
+<td align="left">29 620</td>
+<td align="left">122 520</td>
+<td align="left">794</td>
+<td align="left">749.6</td>
+<td align="left">0</td>
+<td align="left">99.2</td>
+<td align="left">197.8</td>
+<td align="left">334.2</td>
+<td align="left">128.3</td>
+<td align="left">353 687</td>
+<td align="left">113 770</td>
+</tr>
+<tr class="odd">
+<td align="left">44 322</td>
+<td align="left">23 224</td>
+<td align="left">29 317</td>
+<td align="left">121 947</td>
+<td align="left">797</td>
+<td align="left">749.6</td>
+<td align="left">0</td>
+<td align="left">98.9</td>
+<td align="left">198</td>
+<td align="left">330.6</td>
+<td align="left">128.3</td>
+<td align="left">351 135</td>
+<td align="left">113 410</td>
+</tr>
+<tr class="even">
+<td align="left">44 221</td>
+<td align="left">23 136</td>
+<td align="left">29 545</td>
+<td align="left">121 374</td>
+<td align="left">798</td>
+<td align="left">737.7</td>
+<td align="left">0</td>
+<td align="left">98.5</td>
+<td align="left">198.5</td>
+<td align="left">330.6</td>
+<td align="left">128.3</td>
+<td align="left">349 863</td>
+<td align="left">113 100</td>
+</tr>
+<tr class="odd">
+<td align="left">44 074</td>
+<td align="left">23 047</td>
+<td align="left">29 495</td>
+<td align="left">121 232</td>
+<td align="left">801</td>
+<td align="left">727.7</td>
+<td align="left">0</td>
+<td align="left">97.7</td>
+<td align="left">198.5</td>
+<td align="left">330.6</td>
+<td align="left">128.3</td>
+<td align="left">348 594</td>
+<td align="left">113 100</td>
+</tr>
+<tr class="even">
+<td align="left">43 973</td>
+<td align="left">23 047</td>
+<td align="left">29 242</td>
+<td align="left">121 232</td>
+<td align="left">801</td>
+<td align="left">717.2</td>
+<td align="left">0</td>
+<td align="left">97.3</td>
+<td align="left">198.3</td>
+<td align="left">330.6</td>
+<td align="left">128.3</td>
+<td align="left">347 327</td>
+<td align="left">113 100</td>
+</tr>
+<tr class="odd">
+<td align="left">43 826</td>
+<td align="left">22 988</td>
+<td align="left">29 646</td>
+<td align="left">120 233</td>
+<td align="left">801</td>
+<td align="left">703.5</td>
+<td align="left">0</td>
+<td align="left">96.8</td>
+<td align="left">197.8</td>
+<td align="left">328.3</td>
+<td align="left">127.2</td>
+<td align="left">345 643</td>
+<td align="left">113 100</td>
+</tr>
+<tr class="even">
+<td align="left">43 752</td>
+<td align="left">22 900</td>
+<td align="left">29 595</td>
+<td align="left">119 805</td>
+<td align="left">802</td>
+<td align="left">691.5</td>
+<td align="left">0</td>
+<td align="left">95.8</td>
+<td align="left">198.3</td>
+<td align="left">325.9</td>
+<td align="left">127.2</td>
+<td align="left">343 963</td>
+<td align="left">111 780</td>
+</tr>
+</tbody>
+</table>
 
 Combine the Data
 ----------------
@@ -494,27 +687,27 @@ To combine the data, I bind the Date column to the storage columns.
     StorageWide %>% 
       head(20)
 
-    ##          Date Wemmershoek Steenbras Lower Steenbras Upper Vo<cb>Lvlei
-    ## 1  2012-01-01      44 621          23 549          29 620     124 100
-    ## 2  2012-01-02      44 571          23 460          29 620     123 812
-    ## 3  2012-01-03      44 471          23 372          29 570     123 237
-    ## 4  2012-01-04      44 372          23 313          29 620     122 520
-    ## 5  2012-01-05      44 322          23 224          29 317     121 947
-    ## 6  2012-01-06      44 221          23 136          29 545     121 374
-    ## 7  2012-01-07      44 074          23 047          29 495     121 232
-    ## 8  2012-01-08      43 973          23 047          29 242     121 232
-    ## 9  2012-01-09      43 826          22 988          29 646     120 233
-    ## 10 2012-01-10      43 752          22 900          29 595     119 805
-    ## 11 2012-01-11      43 654          22 870          29 595     117 960
-    ## 12 2012-01-12      43 605          22 812          30 003     119 094
-    ## 13 2012-01-13      43 483          22 725          29 773     118 527
-    ## 14 2012-01-14      43 409          22 667          30 182     117 818
-    ## 15 2012-01-15      43 336          22 552          30 156     117 818
-    ## 16 2012-01-16      43 336          22 465          30 156     117 111
-    ## 17 2012-01-17      43 140          22 407          29 545     115 700
-    ## 18 2012-01-18      43 042          22 320          29 292     114 997
-    ## 19 2012-01-19      42 969          22 175          29 141     114 576
-    ## 20 2012-01-20      42 872          22 089          29 066     114 016
+    ##          Date Wemmershoek Steenbras Lower Steenbras Upper Voelvlei
+    ## 1  2012-01-01      44 621          23 549          29 620  124 100
+    ## 2  2012-01-02      44 571          23 460          29 620  123 812
+    ## 3  2012-01-03      44 471          23 372          29 570  123 237
+    ## 4  2012-01-04      44 372          23 313          29 620  122 520
+    ## 5  2012-01-05      44 322          23 224          29 317  121 947
+    ## 6  2012-01-06      44 221          23 136          29 545  121 374
+    ## 7  2012-01-07      44 074          23 047          29 495  121 232
+    ## 8  2012-01-08      43 973          23 047          29 242  121 232
+    ## 9  2012-01-09      43 826          22 988          29 646  120 233
+    ## 10 2012-01-10      43 752          22 900          29 595  119 805
+    ## 11 2012-01-11      43 654          22 870          29 595  117 960
+    ## 12 2012-01-12      43 605          22 812          30 003  119 094
+    ## 13 2012-01-13      43 483          22 725          29 773  118 527
+    ## 14 2012-01-14      43 409          22 667          30 182  117 818
+    ## 15 2012-01-15      43 336          22 552          30 156  117 818
+    ## 16 2012-01-16      43 336          22 465          30 156  117 111
+    ## 17 2012-01-17      43 140          22 407          29 545  115 700
+    ## 18 2012-01-18      43 042          22 320          29 292  114 997
+    ## 19 2012-01-19      42 969          22 175          29 141  114 576
+    ## 20 2012-01-20      42 872          22 089          29 066  114 016
     ##    Hely-Hutchinson Woodhead Victoria Alexandra De Villiers Kleinplaats
     ## 1              763    742.8        0      99.9       196.5       336.6
     ## 2              763    742.8        0      99.2       196.5       336.6

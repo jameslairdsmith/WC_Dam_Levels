@@ -34,7 +34,7 @@ StorageLong %>%
 
 ##What are the largest dams and their capacities?
 
-```{r}
+```{r, fig.height=5, fig.width=7}
 StorageLong %>% 
   select(Dam,Capacity) %>% 
   distinct() %>% 
@@ -44,7 +44,9 @@ StorageLong %>%
   theme(axis.text.x = element_text(angle=45,vjust = 1,hjust = 1)) +
   xlab("Dams") +
   ylab("Capacity ('000)") +
-  scale_y_continuous(labels = function(x){x/1000})
+  scale_y_continuous(labels = function(x){x/1000}) +
+  labs(title = "Wester Cape dam capacities") +
+  labs(caption = "Source: City of Cape Town")
 ```
 
 You can see from the chart that the majority of the capacity is housed in 6 dams. These are generally referred to as the 'Big Six'
@@ -82,7 +84,7 @@ StorageLong %>%
 
 Here is a plot of the seasonal changes.
 
-```{r, fig.width=9, message=FALSE, warning=FALSE}
+```{r, fig.width=8, message=FALSE, warning=FALSE}
 StorageLong %>% 
   mutate(Dam_Other=fct_lump(fct_reorder(Dam,Capacity,.desc = T),6,ties.method = "first")) %>% 
   mutate(Year=year(Date),Month=month(Date)) %>% 

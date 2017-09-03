@@ -144,7 +144,9 @@ What are the largest dams and their capacities?
       theme(axis.text.x = element_text(angle=45,vjust = 1,hjust = 1)) +
       xlab("Dams") +
       ylab("Capacity ('000)") +
-      scale_y_continuous(labels = function(x){x/1000})
+      scale_y_continuous(labels = function(x){x/1000}) +
+      labs(title = "Wester Cape dam capacities") +
+      labs(caption = "Source: City of Cape Town")
 
 ![](Analysis_of_WC_Dam_Levels_files/figure-markdown_strict/unnamed-chunk-3-1.png)
 

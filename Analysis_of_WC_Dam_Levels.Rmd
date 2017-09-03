@@ -107,7 +107,7 @@ SeasonalMonthData<-StorageLong %>%
   group_by(Dam,Year,Month,Dam_Other,Capacity) %>% 
   summarise(PercentTotalCapacity=median(PercentTotalCapacity,na.rm=T),Date=median(Date,na.rm=T))
 
-write.csv(SeasonalMonthData,file="Data/SeasonalMonthData.csv")
+write.csv(SeasonalMonthData,file="Data/SeasonalMonthData.csv",row.names = F)
 
 SeasonalMonthData %>% 
   head(10) %>% 

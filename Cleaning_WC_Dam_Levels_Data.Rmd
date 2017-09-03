@@ -227,6 +227,6 @@ StorageLong %>%
 ```
 
 ```{r}
-write.csv(file = "Data/Clean_WC_Dam_Levels.csv",StorageLong)
+write.csv(file = "Data/Clean_WC_Dam_Levels.csv",StorageLong,row.names = F)
 ```
 

@@ -560,3 +560,45 @@ Here is a plot of the seasonal changes.
       labs(caption = "Source: City of Cape Town")
 
 ![](Analysis_of_WC_Dam_Levels_files/figure-markdown_strict/unnamed-chunk-13-1.png)
+
+    library(huxtable)
+
+    ## Warning: package 'huxtable' was built under R version 3.4.3
+
+    ## 
+    ## Attaching package: 'huxtable'
+
+    ## The following object is masked from 'package:dplyr':
+    ## 
+    ##     add_rownames
+
+    ## The following object is masked from 'package:purrr':
+    ## 
+    ##     every
+
+    ## The following object is masked from 'package:stats':
+    ## 
+    ##     filter
+
+    StorageLong %>% 
+      select(Dam,Capacity) %>% 
+      distinct() %>% 
+      arrange(desc(Capacity)) %>% 
+      mutate(Dam_Other=fct_lump(fct_reorder(Dam,Capacity,.desc = T),6,ties.method = "first")) %>% 
+      as_hux()
+
+Theewaterskloof 480188.00 Theewaterskloof  
+Voelvlei 164095.00 Voelvlei  
+Berg River 130010.00 Berg River  
+Wemmershoek 58644.00 Wemmershoek  
+Steenbras Lower 33517.00 Steenbras Lower  
+Steenbras Upper 31767.00 Steenbras Upper  
+Kleinplaats 1301.00 Other  
+Woodhead 955.00 Other  
+Hely-Hutchinson 925.00 Other  
+De Villiers 242.00 Other  
+Lewis Gay 168.00 Other  
+Alexandra 134.00 Other  
+Victoria 128.00 Other
+
+Column names: Dam, Capacity, Dam\_Other

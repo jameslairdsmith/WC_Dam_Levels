@@ -262,8 +262,8 @@ StorageLong %>%
   distinct() %>% 
   arrange(desc(Capacity)) %>% 
   mutate(Dam_Other=fct_lump(fct_reorder(Dam,Capacity,.desc = T),6,ties.method = "first")) %>% 
-  as_hux() %>% 
-  print_html()
+  as_hux(add_colnames = TRUE) %>% 
+  print_md()
 ```
 
 

@@ -29,7 +29,6 @@ Data Import
 <table>
 <thead>
 <tr class="header">
-<th align="right">X</th>
 <th align="left">Dam</th>
 <th align="left">Date</th>
 <th align="right">Storage</th>
@@ -40,7 +39,6 @@ Data Import
 </thead>
 <tbody>
 <tr class="odd">
-<td align="right">1</td>
 <td align="left">Alexandra</td>
 <td align="left">2012-01-01</td>
 <td align="right">99.9</td>
@@ -49,7 +47,6 @@ Data Import
 <td align="right">0.0001107</td>
 </tr>
 <tr class="even">
-<td align="right">2</td>
 <td align="left">Alexandra</td>
 <td align="left">2012-01-02</td>
 <td align="right">99.2</td>
@@ -58,7 +55,6 @@ Data Import
 <td align="right">0.0001100</td>
 </tr>
 <tr class="odd">
-<td align="right">3</td>
 <td align="left">Alexandra</td>
 <td align="left">2012-01-03</td>
 <td align="right">98.7</td>
@@ -67,7 +63,6 @@ Data Import
 <td align="right">0.0001094</td>
 </tr>
 <tr class="even">
-<td align="right">4</td>
 <td align="left">Alexandra</td>
 <td align="left">2012-01-04</td>
 <td align="right">99.2</td>
@@ -76,7 +71,6 @@ Data Import
 <td align="right">0.0001100</td>
 </tr>
 <tr class="odd">
-<td align="right">5</td>
 <td align="left">Alexandra</td>
 <td align="left">2012-01-05</td>
 <td align="right">98.9</td>
@@ -85,7 +79,6 @@ Data Import
 <td align="right">0.0001096</td>
 </tr>
 <tr class="even">
-<td align="right">6</td>
 <td align="left">Alexandra</td>
 <td align="left">2012-01-06</td>
 <td align="right">98.5</td>
@@ -94,7 +87,6 @@ Data Import
 <td align="right">0.0001092</td>
 </tr>
 <tr class="odd">
-<td align="right">7</td>
 <td align="left">Alexandra</td>
 <td align="left">2012-01-07</td>
 <td align="right">97.7</td>
@@ -103,7 +95,6 @@ Data Import
 <td align="right">0.0001083</td>
 </tr>
 <tr class="even">
-<td align="right">8</td>
 <td align="left">Alexandra</td>
 <td align="left">2012-01-08</td>
 <td align="right">97.3</td>
@@ -112,7 +103,6 @@ Data Import
 <td align="right">0.0001079</td>
 </tr>
 <tr class="odd">
-<td align="right">9</td>
 <td align="left">Alexandra</td>
 <td align="left">2012-01-09</td>
 <td align="right">96.8</td>
@@ -121,7 +111,6 @@ Data Import
 <td align="right">0.0001073</td>
 </tr>
 <tr class="even">
-<td align="right">10</td>
 <td align="left">Alexandra</td>
 <td align="left">2012-01-10</td>
 <td align="right">95.8</td>
@@ -143,9 +132,11 @@ What are the largest dams and their capacities?
       geom_col(aes(x=fct_rev(fct_reorder(Dam,Capacity)),y=Capacity)) +
       theme(axis.text.x = element_text(angle=45,vjust = 1,hjust = 1)) +
       xlab("Dams") +
-      ylab("Capacity ('000)") +
+      theme(axis.title.y=element_blank()) +
+      #ylab("Capacity ('000)") +
       scale_y_continuous(labels = function(x){x/1000}) +
-      labs(title = "Wester Cape dam capacities") +
+      labs(title = "Chart 1: Water capacities of Western Cape dams") +
+      labs(subtitle = "Thousands of megalitres (Ml)") +
       labs(caption = "Source: City of Cape Town")
 
 ![](Analysis_of_WC_Dam_Levels_files/figure-markdown_strict/unnamed-chunk-3-1.png)
@@ -309,10 +300,15 @@ Here is a plot of the seasonal changes.
       ggplot() +
       geom_area(aes(x=Date,y=PercentTotalCapacity,fill=Dam_Other),position = "stack") +
       scale_fill_grey() +
+      theme(axis.title.y=element_blank()) +
       scale_y_continuous(labels = scales::percent) +
       scale_x_date(date_breaks =  "1 year",date_labels = "%Y") +
-      ylab("Percent Capacity") +
-      guides(fill=guide_legend(title = "Dam")) 
+      #ylab("Percent Capacity") +
+      guides(fill=guide_legend(title = "Dam")) +
+      labs(title = "Chart 2: storage level of Western Cape dams") +
+      labs(subtitle = "As percentage of total capacity") +
+      labs(caption = "Source: City of Cape Town") +
+      geom_hline(aes(yintercept=0.1))
 
 ![](Analysis_of_WC_Dam_Levels_files/figure-markdown_strict/unnamed-chunk-6-1.png)
 
@@ -322,7 +318,7 @@ Here is a plot of the seasonal changes.
       group_by(Dam,Year,Month,Dam_Other,Capacity) %>% 
       summarise(PercentTotalCapacity=median(PercentTotalCapacity,na.rm=T),Date=median(Date,na.rm=T))
 
-    write.csv(SeasonalMonthData,file="Data/SeasonalMonthData.csv")
+    write.csv(SeasonalMonthData,file="Data/SeasonalMonthData.csv",row.names = F,na = "")
 
     SeasonalMonthData %>% 
       head(10) %>% 
@@ -448,7 +444,11 @@ Here is a plot of the seasonal changes.
       geom_boxplot(aes(group=Month)) +
       scale_x_continuous(breaks = 1:12) +
       scale_y_continuous(limits = c(-0.015,0.025),labels = scales::percent) +
-      ylab("Daily change in capacity (Big Six)")
+      #ylab("Daily change in capacity (Big Six)") +
+      theme(axis.title.y=element_blank()) +
+      labs(title = "Chart 3: daily percentage changes in storage of 'Big Six' Wester Cape dams") +
+      labs(subtitle = "Grouped by month") +
+      labs(caption = "Source: City of Cape Town")
 
 ![](Analysis_of_WC_Dam_Levels_files/figure-markdown_strict/unnamed-chunk-8-1.png)
 
@@ -464,10 +464,57 @@ Here is a plot of the seasonal changes.
       mutate(Week=week(Date)) %>% 
       ggplot(aes(x=Week,y=ChangeInStorage)) +
       geom_boxplot(aes(group=Week)) +
-      scale_x_continuous(breaks = 1:54) +
-      scale_y_continuous(limits = c(-0.015,0.025))
+      scale_x_continuous(breaks = seq(1,54,2)) +
+      scale_y_continuous(limits = c(-0.015,0.025)) +
+      theme(axis.title.y=element_blank()) +
+      labs(title = "Chart 4: daily percentage changes in storage of 'Big Six' Wester Cape dams") +
+      labs(subtitle = "Grouped by week") +
+      labs(caption = "Source: City of Cape Town")
 
 ![](Analysis_of_WC_Dam_Levels_files/figure-markdown_strict/unnamed-chunk-9-1.png)
+
+    StorageLong %>% 
+      arrange(desc(Capacity)) %>% 
+      ungroup() %>% 
+      mutate(Dam=fct_lump(fct_rev(fct_reorder(Dam,Capacity)),n=6,ties.method = "first")) %>% 
+      filter(Dam!="Other") %>% 
+      select(-Capacity, -PercentDamCapacity,-PercentTotalCapacity) %>% 
+      mutate(Year=year(Date),Month=month(Date,label=T)) %>% 
+      group_by(Dam,Year,Month) %>% 
+      filter(Date==max(Date)) %>% 
+      group_by(Year,Month) %>% 
+      summarise(Storage=sum(Storage)) %>% 
+      ungroup() %>% 
+      mutate(Monthly_change=(Storage-lag(Storage))/lag(Storage)) %>% 
+      #mutate(Month_name=month.abb[Month]) 
+      ggplot(aes(x=Month,y=Monthly_change)) +
+      geom_point() 
+
+    ## Warning: Removed 2 rows containing missing values (geom_point).
+
+![](Analysis_of_WC_Dam_Levels_files/figure-markdown_strict/unnamed-chunk-10-1.png)
+
+      #scale_x_continuous(breaks = 1:12) 
+
+    StorageLong %>% 
+      arrange(desc(Capacity)) %>% 
+      ungroup() %>% 
+      mutate(Dam=fct_lump(fct_rev(fct_reorder(Dam,Capacity)),n=6,ties.method = "first")) %>% 
+      filter(Dam!="Other") %>% 
+      select(-Capacity, -PercentDamCapacity,-PercentTotalCapacity) %>% 
+      mutate(Year=year(Date),Month=month(Date,label=T)) %>% 
+      group_by(Dam,Year,Month) %>% 
+      filter(Date==max(Date)) %>% 
+      group_by(Year,Month) %>% 
+      summarise(Storage=sum(Storage)) %>% 
+      ungroup() %>% 
+      mutate(Monthly_change=(Storage-lag(Storage))/lag(Storage)) %>% 
+      group_by(Month) %>% 
+      summarise(Monthly_change=mean(Monthly_change,na.rm = T)) %>% 
+      ggplot(aes(x=Month,y=Monthly_change)) +
+      geom_col()
+
+![](Analysis_of_WC_Dam_Levels_files/figure-markdown_strict/unnamed-chunk-11-1.png)
 
     StorageLong %>% 
       arrange(desc(Capacity)) %>% 
@@ -480,9 +527,13 @@ Here is a plot of the seasonal changes.
       filter(!is.na(ChangeInStorage)) %>% 
       filter(Storage!=0) %>% 
       ggplot(aes(x=Date,y=ChangeInStorage))+
-      geom_line(na.rm = T)
+      geom_line(na.rm = T) +
+      theme(axis.title.y=element_blank()) +
+      labs(title = "Chart 5: Changes in storage of 'Big Six' Wester Cape dams") +
+      labs(subtitle = "Difference from same date the year before") +
+      labs(caption = "Source: City of Cape Town")
 
-![](Analysis_of_WC_Dam_Levels_files/figure-markdown_strict/unnamed-chunk-10-1.png)
+![](Analysis_of_WC_Dam_Levels_files/figure-markdown_strict/unnamed-chunk-12-1.png)
 
     StorageLong %>% 
       arrange(desc(Capacity)) %>% 
@@ -502,6 +553,10 @@ Here is a plot of the seasonal changes.
       geom_line(na.rm = T) +
       scale_x_date(date_breaks = "1 year",date_labels  = "%Y") +
       scale_y_continuous(labels = function(x){x/1000}) +
-      ylab("Capacity difference from median at time of year ('000)") 
+      #ylab("Capacity difference from median at time of year ('000)") +
+      theme(axis.title.y=element_blank()) +
+      labs(title = "Chart 6: Changes in storage of 'Big Six' Wester Cape dams") +
+      labs(subtitle = "Difference from median of the same dates in all years with available data") +
+      labs(caption = "Source: City of Cape Town")
 
-![](Analysis_of_WC_Dam_Levels_files/figure-markdown_strict/unnamed-chunk-11-1.png)
+![](Analysis_of_WC_Dam_Levels_files/figure-markdown_strict/unnamed-chunk-13-1.png)

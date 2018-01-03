@@ -580,13 +580,15 @@ Here is a plot of the seasonal changes.
     ## 
     ##     filter
 
-    StorageLong %>% 
+    huxt<-StorageLong %>% 
       select(Dam,Capacity) %>% 
       distinct() %>% 
       arrange(desc(Capacity)) %>% 
       mutate(Dam_Other=fct_lump(fct_reorder(Dam,Capacity,.desc = T),6,ties.method = "first")) %>% 
-      as_hux(add_colnames = TRUE) %>% 
-      print_md()
+      as_hux(add_colnames = TRUE) 
+
+    escape_contents(huxt) <- FALSE 
+    print_md(huxt)
 
     ## -------------------------------------------
     ##  Dam             Capacity  Dam_Other       
